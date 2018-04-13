@@ -1,0 +1,1346 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+  
+  
+    
+    
+  <script src="/lib/pace/pace.min.js?v=1.0.2"></script>
+  <link href="/lib/pace/pace-theme-bounce.min.css?v=1.0.2" rel="stylesheet">
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="图像处理,matlab,滤波,拉普拉斯,卷积," />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="空间滤波滤波指接受（通过）或拒绝一定的频率分量。通过低频的滤波器称为 低通滤波器，因为低频表示一副图像中变化缓慢的区域，所以低通滤波器的效果是模糊（平滑）一副图像。同理存在 高通滤波器 一、空间滤波基础1、空间滤波机理：1）新像素点 g(x, y)：  、空间滤波机理：  ​     2、空间相关与卷积相关是滤波器模板移过图像并计算每个位置乘积之和的处理，卷积的机理相似，但是滤波器要旋转180°。">
+<meta name="keywords" content="图像处理,matlab,滤波,拉普拉斯,卷积">
+<meta property="og:type" content="article">
+<meta property="og:title" content="空间滤波与频率域滤波（一）：空间滤波">
+<meta property="og:url" content="http://yoursite.com/2018/04/04/2018-04-04-空间滤波与频率域滤波（一）：空间滤波/index.html">
+<meta property="og:site_name" content="摸鱼摸到大鲨鱼">
+<meta property="og:description" content="空间滤波滤波指接受（通过）或拒绝一定的频率分量。通过低频的滤波器称为 低通滤波器，因为低频表示一副图像中变化缓慢的区域，所以低通滤波器的效果是模糊（平滑）一副图像。同理存在 高通滤波器 一、空间滤波基础1、空间滤波机理：1）新像素点 g(x, y)：  、空间滤波机理：  ​     2、空间相关与卷积相关是滤波器模板移过图像并计算每个位置乘积之和的处理，卷积的机理相似，但是滤波器要旋转180°。">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://res.cloudinary.com/wang-chen-yi/image/upload/v1523588494/空间滤波/1.png">
+<meta property="og:image" content="http://res.cloudinary.com/wang-chen-yi/image/upload/v1523588496/空间滤波/2_fbaubo.png">
+<meta property="og:image" content="http://res.cloudinary.com/wang-chen-yi/image/upload/v1523588495/空间滤波/3_xk65ef.png">
+<meta property="og:image" content="http://res.cloudinary.com/wang-chen-yi/image/upload/v1523588495/空间滤波/4_s7bvd1.png">
+<meta property="og:image" content="http://res.cloudinary.com/wang-chen-yi/image/upload/v1523588494/空间滤波/5.png">
+<meta property="og:image" content="http://res.cloudinary.com/wang-chen-yi/image/upload/v1523588494/空间滤波/6.png">
+<meta property="og:image" content="http://res.cloudinary.com/wang-chen-yi/image/upload/v1523588496/空间滤波/7.png">
+<meta property="og:image" content="http://res.cloudinary.com/wang-chen-yi/image/upload/v1523588497/空间滤波/8.png">
+<meta property="og:image" content="http://res.cloudinary.com/wang-chen-yi/image/upload/v1523588496/空间滤波/9.png">
+<meta property="og:image" content="http://res.cloudinary.com/wang-chen-yi/image/upload/v1523588496/空间滤波/10.png">
+<meta property="og:image" content="http://res.cloudinary.com/wang-chen-yi/image/upload/v1523588496/空间滤波/11.png">
+<meta property="og:image" content="http://res.cloudinary.com/wang-chen-yi/image/upload/v1523588496/空间滤波/12.png">
+<meta property="og:image" content="http://res.cloudinary.com/wang-chen-yi/image/upload/v1523588496/空间滤波/13.png">
+<meta property="og:image" content="http://res.cloudinary.com/wang-chen-yi/image/upload/v1523588496/空间滤波/14.png">
+<meta property="og:image" content="http://res.cloudinary.com/wang-chen-yi/image/upload/v1523588496/空间滤波/15.png">
+<meta property="og:image" content="http://res.cloudinary.com/wang-chen-yi/image/upload/v1523588496/空间滤波/16.png">
+<meta property="og:image" content="http://res.cloudinary.com/wang-chen-yi/image/upload/v1523588496/空间滤波/17.png">
+<meta property="og:image" content="http://res.cloudinary.com/wang-chen-yi/image/upload/v1523588496/空间滤波/18.png">
+<meta property="og:image" content="http://res.cloudinary.com/wang-chen-yi/image/upload/v1523588496/空间滤波/19.png">
+<meta property="og:image" content="http://res.cloudinary.com/wang-chen-yi/image/upload/v1523588496/空间滤波/20.png">
+<meta property="og:image" content="http://res.cloudinary.com/wang-chen-yi/image/upload/v1523588496/空间滤波/21.png">
+<meta property="og:image" content="http://res.cloudinary.com/wang-chen-yi/image/upload/v1523588496/空间滤波/22.png">
+<meta property="og:updated_time" content="2018-04-13T11:45:10.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="空间滤波与频率域滤波（一）：空间滤波">
+<meta name="twitter:description" content="空间滤波滤波指接受（通过）或拒绝一定的频率分量。通过低频的滤波器称为 低通滤波器，因为低频表示一副图像中变化缓慢的区域，所以低通滤波器的效果是模糊（平滑）一副图像。同理存在 高通滤波器 一、空间滤波基础1、空间滤波机理：1）新像素点 g(x, y)：  、空间滤波机理：  ​     2、空间相关与卷积相关是滤波器模板移过图像并计算每个位置乘积之和的处理，卷积的机理相似，但是滤波器要旋转180°。">
+<meta name="twitter:image" content="http://res.cloudinary.com/wang-chen-yi/image/upload/v1523588494/空间滤波/1.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":true,"scrollpercent":true,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2018/04/04/2018-04-04-空间滤波与频率域滤波（一）：空间滤波/"/>
+
+
+
+
+
+  <title>空间滤波与频率域滤波（一）：空间滤波 | 摸鱼摸到大鲨鱼</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">摸鱼摸到大鲨鱼</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">Oh, Suger. You don't have to be so sweet.</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-history"></i> <br />
+            
+            时间轴
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off"
+             placeholder="搜索..." spellcheck="false"
+             type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/04/04/2018-04-04-空间滤波与频率域滤波（一）：空间滤波/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="wang">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/p1.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="摸鱼摸到大鲨鱼">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">空间滤波与频率域滤波（一）：空间滤波</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-04-04T00:00:00+08:00">
+                2018-04-04
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/数字图像处理/" itemprop="url" rel="index">
+                    <span itemprop="name">数字图像处理</span>
+                  </a>
+                </span>
+
+                
+                
+                  ， 
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/数字图像处理/matlab/" itemprop="url" rel="index">
+                    <span itemprop="name">matlab</span>
+                  </a>
+                </span>
+
+                
+                
+                  ， 
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/数字图像处理/matlab/滤波/" itemprop="url" rel="index">
+                    <span itemprop="name">滤波</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">字数统计&#58;</span>
+                
+                <span title="字数统计">
+                  2,656
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
+                
+                <span title="阅读时长">
+                  12
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="空间滤波"><a href="#空间滤波" class="headerlink" title="空间滤波"></a>空间滤波</h1><p>滤波指接受（通过）或拒绝一定的频率分量。通过低频的滤波器称为 <strong>低通滤波器</strong>，因为低频表示一副图像中变化缓慢的区域，所以低通滤波器的效果是模糊（平滑）一副图像。同理存在 <strong>高通滤波器</strong></p>
+<h2 id="一、空间滤波基础"><a href="#一、空间滤波基础" class="headerlink" title="一、空间滤波基础"></a>一、空间滤波基础</h2><h3 id="1、空间滤波机理："><a href="#1、空间滤波机理：" class="headerlink" title="1、空间滤波机理："></a>1、空间滤波机理：</h3><p>1）新像素点 g(x, y)：</p>
+<p><img src="http://res.cloudinary.com/wang-chen-yi/image/upload/v1523588494/空间滤波/1.png" alt="1"></p>
+<p>、空间滤波机理：</p>
+<p><img src="http://res.cloudinary.com/wang-chen-yi/image/upload/v1523588496/空间滤波/2_fbaubo.png" alt="2"></p>
+<p>​    </p>
+<h3 id="2、空间相关与卷积"><a href="#2、空间相关与卷积" class="headerlink" title="2、空间相关与卷积"></a>2、空间相关与卷积</h3><p>相关是滤波器模板移过图像并计算每个位置乘积之和的处理，卷积的机理相似，但是滤波器要旋转180°。下图为一维操作的相关和卷积操作</p>
+<p><img src="http://res.cloudinary.com/wang-chen-yi/image/upload/v1523588495/空间滤波/3_xk65ef.png" alt="3"></p>
+<p>二维与一维相似，下图为二维情况下的相关和卷积操作</p>
+<p><img src="http://res.cloudinary.com/wang-chen-yi/image/upload/v1523588495/空间滤波/4_s7bvd1.png" alt="4"></p>
+<p>使用符号记录相关和卷积：</p>
+<p>相关：</p>
+<p><img src="http://res.cloudinary.com/wang-chen-yi/image/upload/v1523588494/空间滤波/5.png" alt="5"></p>
+<p>卷积：</p>
+<p><img src="http://res.cloudinary.com/wang-chen-yi/image/upload/v1523588494/空间滤波/6.png" alt="6"></p>
+<h3 id="3、Matlab实验：滤波的实现"><a href="#3、Matlab实验：滤波的实现" class="headerlink" title="3、Matlab实验：滤波的实现"></a>3、Matlab实验：滤波的实现</h3><h4 id="1）基础用法：imfilter函数-–-5-5的均值滤波"><a href="#1）基础用法：imfilter函数-–-5-5的均值滤波" class="headerlink" title="1）基础用法：imfilter函数 – 5 * 5的均值滤波"></a>1）基础用法：imfilter函数 – 5 * 5的均值滤波</h4><figure class="highlight matlab"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">&gt;&gt; <span class="built_in">i</span> = imread(<span class="string">'coins.png'</span>);</span><br><span class="line">&gt;&gt; subplot(<span class="number">121</span>);imshow(<span class="built_in">i</span>);</span><br><span class="line">&gt;&gt; title(<span class="string">'原始图像'</span>);</span><br><span class="line">&gt;&gt; h = <span class="built_in">ones</span>(<span class="number">5</span>, <span class="number">5</span>) / <span class="number">25</span>;</span><br><span class="line">&gt;&gt; i2 = imfilter(<span class="built_in">i</span>, h);</span><br><span class="line">&gt;&gt; subplot(<span class="number">122</span>);imshow(i2);</span><br><span class="line">&gt;&gt; title(<span class="string">'均值滤波'</span>);</span><br></pre></td></tr></table></figure>
+<p><img src="http://res.cloudinary.com/wang-chen-yi/image/upload/v1523588496/空间滤波/7.png" alt="7"></p>
+<h4 id="2）相关和卷积"><a href="#2）相关和卷积" class="headerlink" title="2）相关和卷积"></a>2）相关和卷积</h4><p>利用imfilter函数进行滤波时可以使用相关核或卷积核进行操作。默认为相关核，如要使用卷积核，则使用参数<code>&#39;conv&#39;</code>。</p>
+<figure class="highlight matlab"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line">&gt;&gt; clear all;</span><br><span class="line">&gt;&gt; a = <span class="built_in">magic</span>(<span class="number">5</span>);</span><br><span class="line">&gt;&gt; a</span><br><span class="line"></span><br><span class="line">a =</span><br><span class="line"></span><br><span class="line">    <span class="number">17</span>    <span class="number">24</span>     <span class="number">1</span>     <span class="number">8</span>    <span class="number">15</span></span><br><span class="line">    <span class="number">23</span>     <span class="number">5</span>     <span class="number">7</span>    <span class="number">14</span>    <span class="number">16</span></span><br><span class="line">     <span class="number">4</span>     <span class="number">6</span>    <span class="number">13</span>    <span class="number">20</span>    <span class="number">22</span></span><br><span class="line">    <span class="number">10</span>    <span class="number">12</span>    <span class="number">19</span>    <span class="number">21</span>     <span class="number">3</span></span><br><span class="line">    <span class="number">11</span>    <span class="number">18</span>    <span class="number">25</span>     <span class="number">2</span>     <span class="number">9</span></span><br><span class="line"></span><br><span class="line">&gt;&gt; h = [<span class="number">-1</span> <span class="number">0</span> <span class="number">1</span>]; <span class="comment">% 操作核</span></span><br><span class="line">&gt;&gt; imfilter(a, h)</span><br><span class="line"></span><br><span class="line"><span class="built_in">ans</span> =</span><br><span class="line"></span><br><span class="line">    <span class="number">24</span>   <span class="number">-16</span>   <span class="number">-16</span>    <span class="number">14</span>    <span class="number">-8</span></span><br><span class="line">     <span class="number">5</span>   <span class="number">-16</span>     <span class="number">9</span>     <span class="number">9</span>   <span class="number">-14</span></span><br><span class="line">     <span class="number">6</span>     <span class="number">9</span>    <span class="number">14</span>     <span class="number">9</span>   <span class="number">-20</span></span><br><span class="line">    <span class="number">12</span>     <span class="number">9</span>     <span class="number">9</span>   <span class="number">-16</span>   <span class="number">-21</span></span><br><span class="line">    <span class="number">18</span>    <span class="number">14</span>   <span class="number">-16</span>   <span class="number">-16</span>    <span class="number">-2</span></span><br><span class="line"></span><br><span class="line">&gt;&gt; imfilter(a, h, <span class="string">'conv'</span>) <span class="comment">% 正负号改变</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">ans</span> =</span><br><span class="line"></span><br><span class="line">   <span class="number">-24</span>    <span class="number">16</span>    <span class="number">16</span>   <span class="number">-14</span>     <span class="number">8</span></span><br><span class="line">    <span class="number">-5</span>    <span class="number">16</span>    <span class="number">-9</span>    <span class="number">-9</span>    <span class="number">14</span></span><br><span class="line">    <span class="number">-6</span>    <span class="number">-9</span>   <span class="number">-14</span>    <span class="number">-9</span>    <span class="number">20</span></span><br><span class="line">   <span class="number">-12</span>    <span class="number">-9</span>    <span class="number">-9</span>    <span class="number">16</span>    <span class="number">21</span></span><br><span class="line">   <span class="number">-18</span>   <span class="number">-14</span>    <span class="number">16</span>    <span class="number">16</span>     <span class="number">2</span></span><br></pre></td></tr></table></figure>
+<h4 id="3）边界填充选项"><a href="#3）边界填充选项" class="headerlink" title="3）边界填充选项"></a>3）边界填充选项</h4><p>imfilter函数默认将边界的像素值补充为 0，称为 0填充。使用 0填充进行滤波时，图像周围可能产生黑色边界。为了去除黑色边界，imfilter使用另一种称为边界复制的边界填充方法，在这种方法中，图像边界外的像素值有距离边界最近的像素值决定。</p>
+<table>
+<thead>
+<tr>
+<th>Boundary Options</th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>X</code></td>
+<td>输入图像的外部边界通过 X 来拓展，默认 X = 0</td>
+</tr>
+<tr>
+<td><code>symmetric</code></td>
+<td>输入图像的外部边界通过镜像反射器内部边界来拓展</td>
+</tr>
+<tr>
+<td><code>replicate</code></td>
+<td>输入图像的外部边界通过复制内部边界的值来拓展</td>
+</tr>
+<tr>
+<td><code>circular</code></td>
+<td>输入图像的边界通过假设输入图像是周期函数来拓展</td>
+</tr>
+</tbody>
+</table>
+<figure class="highlight matlab"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">&gt;&gt; clear all</span><br><span class="line">&gt;&gt; <span class="built_in">i</span> = imread(<span class="string">'peppers.png'</span>);</span><br><span class="line">&gt;&gt; subplot(<span class="number">131</span>);imshow(<span class="built_in">i</span>);</span><br><span class="line">&gt;&gt; title(<span class="string">'原始图像'</span>);</span><br><span class="line"></span><br><span class="line">&gt;&gt; h = <span class="built_in">ones</span>(<span class="number">5</span>, <span class="number">5</span>)/<span class="number">25</span>;</span><br><span class="line">&gt;&gt; i2 = imfilter(<span class="built_in">i</span>, h);</span><br><span class="line">&gt;&gt; subplot(<span class="number">132</span>);imshow(i2);</span><br><span class="line">&gt;&gt; title(<span class="string">'0填充'</span>);</span><br><span class="line"></span><br><span class="line">&gt;&gt; i3 = imfilter(<span class="built_in">i</span>, h, <span class="string">'replicate'</span>);</span><br><span class="line">&gt;&gt; subplot(<span class="number">133</span>);imshow(i3);</span><br><span class="line">&gt;&gt; title(<span class="string">'边界复制填充'</span>);</span><br></pre></td></tr></table></figure>
+<h4 id="4）预定义滤波器-核-fspecial函数"><a href="#4）预定义滤波器-核-fspecial函数" class="headerlink" title="4）预定义滤波器(核) - fspecial函数"></a>4）预定义滤波器(核) - fspecial函数</h4><p>具体语法详情可参照matlab的语法。定义语法：</p>
+<p><code>h = fspecial(&#39;average&#39;,hsize)</code> 均值滤波器</p>
+<p><code>h = fspecial(&#39;disk&#39;,radius)</code> 有 (radiuns * 2 + 1)个边的圆形均值滤波器</p>
+<p><code>h = fspecial(&#39;gaussian&#39;,hsize,sigma)</code> 标准偏差为 sigma，大小为 hsize 的高斯低通滤波器</p>
+<p><code>h = fspecial(&#39;laplacian&#39;,alpha)</code> 系数由 alpha (0.0 ~ 1.0) 决定的二维拉普拉斯操作</p>
+<p><code>h = fspecial(&#39;log&#39;,hsize,sigma)</code>标准偏差为 sigma，大小为 hsize 的高斯滤波器旋转对称拉氏算子。。。</p>
+<p><code>h = fspecial(&#39;motion&#39;,len,theta)</code> 角度 theta 移动 len个像素的运动滤波器</p>
+<p><code>h = fspecial(&#39;prewitt&#39;)</code> 近似计算垂直梯度的水平边缘强调算子</p>
+<p><code>h = fspecial(&#39;sobel&#39;)</code> 近似计算垂直梯度光滑效应的水平边缘强调算子</p>
+<p><code>h = fspecial(&#39;unsharp&#39;, alpha)</code> 根据alpha决定的拉氏算子创建的掩模滤波器</p>
+<figure class="highlight matlab"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">i</span> = imread(<span class="string">'cameraman.tif'</span>);</span><br><span class="line">&gt;&gt; subplot(<span class="number">221</span>);imshow(<span class="built_in">i</span>);</span><br><span class="line">&gt;&gt; title(<span class="string">'原始图像'</span>)</span><br><span class="line">&gt;&gt; h = fspecial(<span class="string">'motion'</span>, <span class="number">20</span>, <span class="number">45</span>);</span><br><span class="line">&gt;&gt; MotionBlur = imfilter(<span class="built_in">i</span>, h, <span class="string">'replicate'</span>);</span><br><span class="line">&gt;&gt; subplot(<span class="number">222</span>);imshow(MotionBlur);</span><br><span class="line">&gt;&gt; title(<span class="string">'运动滤波器'</span>);</span><br><span class="line">&gt;&gt; h = fspecial(<span class="string">'disk'</span>, <span class="number">10</span>);</span><br><span class="line">&gt;&gt; blurred = imfilter(<span class="built_in">i</span>, h, <span class="string">'replicate'</span>);</span><br><span class="line">&gt;&gt; subplot(<span class="number">223</span>);imshow(blurred);</span><br><span class="line">&gt;&gt; h = fspecial(<span class="string">'unsharp'</span>);</span><br><span class="line">&gt;&gt; sharpened = imfilter(<span class="built_in">i</span>, h, <span class="string">'replicate'</span>);</span><br><span class="line">&gt;&gt; subplot(<span class="number">224</span>);imshow(sharpened);</span><br><span class="line">&gt;&gt; title(<span class="string">'掩模滤波器'</span>);</span><br></pre></td></tr></table></figure>
+<p><img src="http://res.cloudinary.com/wang-chen-yi/image/upload/v1523588497/空间滤波/8.png" alt="8"></p>
+<h2 id="二、平滑空间滤波器"><a href="#二、平滑空间滤波器" class="headerlink" title="二、平滑空间滤波器"></a>二、平滑空间滤波器</h2><p>平滑滤波器用于模糊处理和降低噪声，模糊处理经常用于预处理任务中，例如在（大）目标中提取之前 去除图像中的一些琐碎细节等</p>
+<h3 id="1、平滑线性滤波器"><a href="#1、平滑线性滤波器" class="headerlink" title="1、平滑线性滤波器"></a>1、平滑线性滤波器</h3><p><img src="http://res.cloudinary.com/wang-chen-yi/image/upload/v1523588496/空间滤波/9.png" alt="9"></p>
+<h3 id="2、统计排序（非线性）滤波器"><a href="#2、统计排序（非线性）滤波器" class="headerlink" title="2、统计排序（非线性）滤波器"></a>2、统计排序（非线性）滤波器</h3><p>这种滤波器的响应以滤波器包围的图像区域中所包含的像素排序为基础，然后使用统计排序结果决定的值带图中心像素的值。这一类中最知名的为 <strong>中值滤波器</strong></p>
+<p><strong>中值滤波器</strong> 将像素邻域内灰度的中值代替该像素的值。中值滤波器对处理脉冲噪声非常有效，该种噪声也称为 <em>椒盐噪声</em>。</p>
+<h3 id="3、Matlab实验：图像的统计特性"><a href="#3、Matlab实验：图像的统计特性" class="headerlink" title="3、Matlab实验：图像的统计特性"></a>3、Matlab实验：图像的统计特性</h3><h4 id="1）图像均值"><a href="#1）图像均值" class="headerlink" title="1）图像均值"></a>1）图像均值</h4><p>使用mean2计算矩阵的均值。</p>
+<figure class="highlight matlab"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">&gt;&gt; clear all</span><br><span class="line">&gt;&gt; <span class="built_in">i</span> = imread(<span class="string">'onion.png'</span>);</span><br><span class="line">&gt;&gt; <span class="built_in">j</span> = rgb2gray(<span class="built_in">i</span>);</span><br><span class="line">&gt;&gt; gray = mean2(<span class="built_in">j</span>);</span><br><span class="line">&gt;&gt; rgb = mean2(<span class="built_in">i</span>);</span><br><span class="line">&gt;&gt; r = mean2(<span class="built_in">i</span>(:,:,<span class="number">1</span>))</span><br><span class="line">r =</span><br><span class="line">  <span class="number">137.3282</span></span><br><span class="line">&gt;&gt; g = mean2(<span class="built_in">i</span>(:,:,<span class="number">2</span>))</span><br><span class="line">g =</span><br><span class="line">   <span class="number">92.7850</span></span><br><span class="line">&gt;&gt; b = mean2(<span class="built_in">i</span>(:,:,<span class="number">3</span>))</span><br><span class="line">b =</span><br><span class="line">   <span class="number">45.2651</span></span><br><span class="line">&gt;&gt; gray</span><br><span class="line">gray =</span><br><span class="line">  <span class="number">100.6817</span></span><br></pre></td></tr></table></figure>
+<h4 id="2）图像的标准差"><a href="#2）图像的标准差" class="headerlink" title="2）图像的标准差"></a>2）图像的标准差</h4><p>matlab使用std函数计算向量的标准差，用std2来计算矩阵的标准差。</p>
+<figure class="highlight matlab"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">&gt;&gt; clear all;</span><br><span class="line">&gt;&gt; <span class="built_in">i</span> = imread(<span class="string">'liftingbody.png'</span>);</span><br><span class="line">&gt;&gt; s1 = std2(<span class="built_in">i</span>);</span><br><span class="line">&gt;&gt; <span class="built_in">j</span> = histeq(<span class="built_in">i</span>);</span><br><span class="line">&gt;&gt; s2 = std2(<span class="built_in">j</span>);</span><br><span class="line">&gt;&gt; s1</span><br><span class="line">s1 =</span><br><span class="line">   <span class="number">31.6897</span></span><br><span class="line">&gt;&gt; s2</span><br><span class="line">s2 =</span><br><span class="line">   <span class="number">74.8416</span></span><br></pre></td></tr></table></figure>
+<h4 id="3）图像的相关系数"><a href="#3）图像的相关系数" class="headerlink" title="3）图像的相关系数"></a>3）图像的相关系数</h4><p>matlab提供了corr2函数计算两个灰度图像的相关系数。</p>
+<figure class="highlight matlab"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">&gt;&gt; clear all;</span><br><span class="line">&gt;&gt; <span class="built_in">i</span> = imread(<span class="string">'pout.tif'</span>);</span><br><span class="line">&gt;&gt; <span class="built_in">j</span> = medfilt2(<span class="built_in">i</span>); <span class="comment">% 中值滤波器</span></span><br><span class="line">&gt;&gt; r = corr2(<span class="built_in">i</span>, <span class="built_in">j</span>);</span><br><span class="line">&gt;&gt; r</span><br><span class="line">r =</span><br><span class="line">    <span class="number">0.9959</span></span><br></pre></td></tr></table></figure>
+<p>得到两幅图像的相关系数为 0.9959，相似度非常高。</p>
+<h4 id="4）图像的等高线"><a href="#4）图像的等高线" class="headerlink" title="4）图像的等高线"></a>4）图像的等高线</h4><p>matlab使用 <code>imcontour</code> 来显示灰度图像中数据轮廓图，具体语法可查看matlab帮助</p>
+<figure class="highlight matlab"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&gt;&gt; clear all;</span><br><span class="line">&gt;&gt; <span class="built_in">i</span> = imread(<span class="string">'onion.png'</span>);</span><br><span class="line">&gt;&gt; <span class="built_in">j</span> = rgb2gray(<span class="built_in">i</span>);</span><br><span class="line">&gt;&gt; subplot(<span class="number">121</span>);imshow(<span class="built_in">j</span>);</span><br><span class="line">&gt;&gt; subplot(<span class="number">122</span>);imcontour(<span class="built_in">j</span>);</span><br></pre></td></tr></table></figure>
+<h2 id="三、锐化空间滤波器"><a href="#三、锐化空间滤波器" class="headerlink" title="三、锐化空间滤波器"></a>三、锐化空间滤波器</h2><p>锐化处理的目的主要是突出灰度的过度部分</p>
+<h3 id="1、使用二阶微分进行图像锐化-拉普拉斯算子"><a href="#1、使用二阶微分进行图像锐化-拉普拉斯算子" class="headerlink" title="1、使用二阶微分进行图像锐化-拉普拉斯算子"></a>1、使用二阶微分进行图像锐化-拉普拉斯算子</h3><p>一个二维图像函数 f(x,y) 的拉普拉斯算子定义为:</p>
+<p><img src="http://res.cloudinary.com/wang-chen-yi/image/upload/v1523588496/空间滤波/10.png" alt="10"></p>
+<p>将二阶微分定义为差分，在x方向：</p>
+<p><img src="http://res.cloudinary.com/wang-chen-yi/image/upload/v1523588496/空间滤波/11.png" alt="11"></p>
+<p>在y方向</p>
+<p><img src="http://res.cloudinary.com/wang-chen-yi/image/upload/v1523588496/空间滤波/12.png" alt="12"></p>
+<p>所以两个变量的拉普拉斯算子定义为：</p>
+<p><img src="http://res.cloudinary.com/wang-chen-yi/image/upload/v1523588496/空间滤波/13.png" alt="13"></p>
+<p>因为拉普拉斯是一种微分算子，强调的是图像中灰度的突变。故拉普拉斯会产生把 浅灰色边线 和 突变点 叠加到暗色背景中的图像。将原图像和拉普拉斯图像叠加到一起，可以复原背景的特性，并且保持拉普拉斯锐化处理的效果。</p>
+<p>ps：如果使用定义具有负的中心系数，那么必须将图像减去拉普拉斯变换后的图像，而不是加上它。</p>
+<p><img src="http://res.cloudinary.com/wang-chen-yi/image/upload/v1523588496/空间滤波/14.png" alt="14"></p>
+<h3 id="2、非锐化掩蔽和高提升滤波"><a href="#2、非锐化掩蔽和高提升滤波" class="headerlink" title="2、非锐化掩蔽和高提升滤波"></a>2、非锐化掩蔽和高提升滤波</h3><p>在印刷和出版界已用了多年的图像锐化处理过程是从原图像中减去一副非锐化（平滑过的）版本，称为 <em>非锐化掩蔽</em>。</p>
+<p>步骤：</p>
+<p>① 模糊原图像</p>
+<p>② 将原图像减去模糊图像（产生的差值称为模板）</p>
+<p>③ 将模板加到原图像中</p>
+<p>非锐化掩蔽公式描述如下：</p>
+<p><img src="http://res.cloudinary.com/wang-chen-yi/image/upload/v1523588496/空间滤波/15.png" alt="15"></p>
+<h3 id="3、使用一阶微分（非线性）进行图像锐化-梯度"><a href="#3、使用一阶微分（非线性）进行图像锐化-梯度" class="headerlink" title="3、使用一阶微分（非线性）进行图像锐化-梯度"></a>3、使用一阶微分（非线性）进行图像锐化-梯度</h3><p>对于函数 f(x, y)，f 在坐标 (x, y) 处的梯度定义为：</p>
+<p><img src="http://res.cloudinary.com/wang-chen-yi/image/upload/v1523588496/空间滤波/16.png" alt="16"></p>
+<p>该向量具有重要的几何特性，即它指出了在位置（x, y）处 f 的最大变化率方向</p>
+<p><img src="http://res.cloudinary.com/wang-chen-yi/image/upload/v1523588496/空间滤波/17.png" alt="17"></p>
+<p>在图像中，记gx和gy为：</p>
+<p><img src="http://res.cloudinary.com/wang-chen-yi/image/upload/v1523588496/空间滤波/18.png" alt="18"></p>
+<p>最终可得到：</p>
+<p><img src="http://res.cloudinary.com/wang-chen-yi/image/upload/v1523588496/空间滤波/19.png" alt="19"></p>
+<h3 id="4、Matlab实验：空间域滤波"><a href="#4、Matlab实验：空间域滤波" class="headerlink" title="4、Matlab实验：空间域滤波"></a>4、Matlab实验：空间域滤波</h3><h4 id="1）图像加入噪声"><a href="#1）图像加入噪声" class="headerlink" title="1）图像加入噪声"></a>1）图像加入噪声</h4><p>matlab提供了 <code>imnoise</code> 函数对一副图像加入不同类型的噪声</p>
+<figure class="highlight matlab"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">&gt;&gt; clear all;</span><br><span class="line">&gt;&gt; <span class="built_in">i</span> = imread(<span class="string">'eight.tif'</span>);</span><br><span class="line">&gt;&gt; subplot(<span class="number">231</span>);imshow(<span class="built_in">i</span>);</span><br><span class="line">&gt;&gt; title(<span class="string">'原始图像'</span>);</span><br><span class="line"></span><br><span class="line">&gt;&gt; j1 = imnoise(<span class="built_in">i</span>, <span class="string">'gaussian'</span>, <span class="number">0.15</span>); <span class="comment">% 高斯噪声</span></span><br><span class="line">&gt;&gt; subplot(<span class="number">232</span>);imshow(j1);</span><br><span class="line">&gt;&gt; title(<span class="string">'添加高斯噪声'</span>);</span><br><span class="line"></span><br><span class="line">&gt;&gt; j2 = imnoise(<span class="built_in">i</span>, <span class="string">'salt &amp; pepper'</span>, <span class="number">0.15</span>); <span class="comment">% 椒盐噪声</span></span><br><span class="line">&gt;&gt; subplot(<span class="number">233</span>);imshow(j2);</span><br><span class="line">&gt;&gt; title(<span class="string">'椒盐噪声'</span>);</span><br><span class="line"></span><br><span class="line">&gt;&gt; j3 = imnoise(<span class="built_in">i</span>, <span class="string">'poisson'</span>); <span class="comment">% 泊松噪声 </span></span><br><span class="line">&gt;&gt; subplot(<span class="number">234</span>);imshow(j3);</span><br><span class="line">&gt;&gt; title(<span class="string">'poisson噪声'</span>);</span><br><span class="line"></span><br><span class="line">&gt;&gt; j4 = imnoise(<span class="built_in">i</span>, <span class="string">'speckle'</span>, <span class="number">0.15</span>);</span><br><span class="line">&gt;&gt; subplot(<span class="number">235</span>);imshow(j4);</span><br><span class="line">&gt;&gt; title(<span class="string">'乘法噪声'</span>);</span><br></pre></td></tr></table></figure>
+<h4 id="2）中值滤波器"><a href="#2）中值滤波器" class="headerlink" title="2）中值滤波器"></a>2）中值滤波器</h4><p>matlab使用 <code>medfilt2</code> 函数来进行中值滤波</p>
+<figure class="highlight matlab"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">&gt;&gt; clear all;</span><br><span class="line">&gt;&gt; <span class="built_in">i</span> = imread(<span class="string">'eight.tif'</span>);</span><br><span class="line">&gt;&gt; figure;</span><br><span class="line">&gt;&gt; subplot(<span class="number">211</span>);imshow(<span class="built_in">i</span>);</span><br><span class="line">&gt;&gt; title(<span class="string">'原始图像'</span>);</span><br><span class="line">&gt;&gt; <span class="built_in">j</span> = imnoise(<span class="built_in">i</span>, <span class="string">'salt &amp; pepper'</span>, <span class="number">0.02</span>);</span><br><span class="line">&gt;&gt; k = medfilt2(<span class="built_in">j</span>);</span><br><span class="line">&gt;&gt; subplot(<span class="number">212</span>);imshowpair(<span class="built_in">j</span>, k, <span class="string">'montage'</span>);</span><br><span class="line">&gt;&gt; title(<span class="string">'中值滤波器效果'</span>)</span><br></pre></td></tr></table></figure>
+<p><img src="http://res.cloudinary.com/wang-chen-yi/image/upload/v1523588496/空间滤波/20.png" alt="20"></p>
+<h4 id="3）自适应滤波器"><a href="#3）自适应滤波器" class="headerlink" title="3）自适应滤波器"></a>3）自适应滤波器</h4><p>metlab使用 <code>winener2</code> 函数来进行图像自适应滤波处理</p>
+<figure class="highlight matlab"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">&gt;&gt; clear all;</span><br><span class="line">&gt;&gt; rgb = imread(<span class="string">'saturn.png'</span>);</span><br><span class="line">&gt;&gt; subplot(<span class="number">131</span>);imshow(rgb);</span><br><span class="line">&gt;&gt; title(<span class="string">'原始图像'</span>);</span><br><span class="line"></span><br><span class="line">&gt;&gt; <span class="built_in">i</span> = rgb2gray(rgb);</span><br><span class="line">&gt;&gt; <span class="built_in">j</span> = imnoise(<span class="built_in">i</span>, <span class="string">'gaussian'</span>, <span class="number">0</span>, <span class="number">0.025</span>);</span><br><span class="line">&gt;&gt; subplot(<span class="number">132</span>);imshow(<span class="built_in">j</span>)</span><br><span class="line">&gt;&gt; title(<span class="string">'带有高斯噪声的图像'</span>);</span><br><span class="line"></span><br><span class="line">&gt;&gt; k = wiener2(<span class="built_in">j</span>, [<span class="number">5</span>,<span class="number">5</span>]);</span><br><span class="line">&gt;&gt; subplot(<span class="number">133</span>);imshow(k);</span><br><span class="line">&gt;&gt; title(<span class="string">'自适应中值滤波'</span>)</span><br></pre></td></tr></table></figure>
+<h4 id="4）排序滤波"><a href="#4）排序滤波" class="headerlink" title="4）排序滤波"></a>4）排序滤波</h4><p>用法例：</p>
+<ul>
+<li>y = ordfilt2(X, 5, ones(3, 3)) 相当于 3×3的中值滤波</li>
+<li>y = ordfilt2(X, 1, ones(3, 3)) 相当于 3×3的最小值滤波</li>
+<li>y = ordfilt2(X, 9, ones(3, 3)) 相当于 3×3的最大值滤波</li>
+<li>y = ordfilt2(X, 1, [0 1 0; 1 0 1; 0 1 0]) 输出的是每个像素的东、西、南、北4个方向的相邻像素灰度的最小值</li>
+</ul>
+<figure class="highlight matlab"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">&gt;&gt; clear all;</span><br><span class="line">&gt;&gt; <span class="built_in">i</span> = imread(<span class="string">'circuit.tif'</span>);</span><br><span class="line">&gt;&gt; subplot(<span class="number">223</span>);imshow(<span class="built_in">i</span>);</span><br><span class="line">&gt;&gt; subplot(<span class="number">221</span>);imshow(<span class="built_in">i</span>);</span><br><span class="line">&gt;&gt; title(<span class="string">'原始图像'</span>)</span><br><span class="line"></span><br><span class="line">&gt;&gt; b = ordfilt2(<span class="built_in">i</span>, <span class="number">25</span>, true(<span class="number">5</span>));</span><br><span class="line">&gt;&gt; subplot(<span class="number">222</span>);imshow(b);</span><br><span class="line">&gt;&gt; title(<span class="string">'排序滤波'</span>)</span><br><span class="line"></span><br><span class="line">&gt;&gt; <span class="built_in">j</span> = imnoise(<span class="built_in">i</span>, <span class="string">'gaussian'</span>, <span class="number">0</span>, <span class="number">0.025</span>);</span><br><span class="line">&gt;&gt; subplot(<span class="number">223</span>);imshow(<span class="built_in">j</span>);</span><br><span class="line">&gt;&gt; title(<span class="string">'高斯噪声'</span>);</span><br><span class="line"></span><br><span class="line">&gt;&gt; c = ordfilt2(<span class="built_in">j</span>, <span class="number">25</span>, true(<span class="number">5</span>));</span><br><span class="line">&gt;&gt; subplot(<span class="number">224</span>);imshow(c);</span><br><span class="line">&gt;&gt; title(<span class="string">'含噪排序滤波'</span>)</span><br></pre></td></tr></table></figure>
+<p><img src="http://res.cloudinary.com/wang-chen-yi/image/upload/v1523588496/空间滤波/21.png" alt="21"></p>
+<h4 id="5）线性锐化滤波"><a href="#5）线性锐化滤波" class="headerlink" title="5）线性锐化滤波"></a>5）线性锐化滤波</h4><p>① 线性锐化滤波-拉普拉斯滤波器（会有一张专题介绍）</p>
+<figure class="highlight matlab"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">&gt;&gt; clear all;</span><br><span class="line">&gt;&gt; <span class="built_in">i</span> = imread(<span class="string">'onion.png'</span>);</span><br><span class="line">&gt;&gt; h1 = [<span class="number">0</span> <span class="number">-1</span> <span class="number">0</span>; <span class="number">-1</span> <span class="number">5</span> <span class="number">-1</span>; <span class="number">0</span> <span class="number">-1</span> <span class="number">0</span>];</span><br><span class="line">&gt;&gt; h2 = [<span class="number">-1</span> <span class="number">-1</span> <span class="number">-1</span>; <span class="number">-1</span> <span class="number">9</span> <span class="number">-1</span>; <span class="number">-1</span> <span class="number">-1</span> <span class="number">-1</span>];</span><br><span class="line">&gt;&gt; h1</span><br><span class="line">     <span class="number">0</span>    <span class="number">-1</span>     <span class="number">0</span></span><br><span class="line">    <span class="number">-1</span>     <span class="number">5</span>    <span class="number">-1</span></span><br><span class="line">     <span class="number">0</span>    <span class="number">-1</span>     <span class="number">0</span></span><br><span class="line">&gt;&gt; h2</span><br><span class="line">    <span class="number">-1</span>    <span class="number">-1</span>    <span class="number">-1</span></span><br><span class="line">    <span class="number">-1</span>     <span class="number">9</span>    <span class="number">-1</span></span><br><span class="line">    <span class="number">-1</span>    <span class="number">-1</span>    <span class="number">-1</span></span><br><span class="line"></span><br><span class="line">&gt;&gt; bw1 = imfilter(<span class="built_in">i</span>, h1);</span><br><span class="line">&gt;&gt; bw2 = imfilter(<span class="built_in">i</span>, h2);</span><br><span class="line">&gt;&gt; subplot(<span class="number">131</span>);imshow(<span class="built_in">i</span>);</span><br><span class="line">&gt;&gt; subplot(<span class="number">132</span>);imshow(uint8(bw1));</span><br><span class="line">&gt;&gt; subplot(<span class="number">133</span>);imshow(uint8(bw2));</span><br></pre></td></tr></table></figure>
+<p>② Wallis算子（暂定）</p>
+<h4 id="6）非线性锐化"><a href="#6）非线性锐化" class="headerlink" title="6）非线性锐化"></a>6）非线性锐化</h4><figure class="highlight matlab"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">&gt;&gt; [i, map] = imread(<span class="string">'lean.jpg'</span>);</span><br><span class="line">&gt;&gt; subplot(<span class="number">221</span>);imshow(<span class="built_in">i</span>);</span><br><span class="line">&gt;&gt; <span class="built_in">i</span> = double(<span class="built_in">i</span>);</span><br><span class="line"></span><br><span class="line">&gt;&gt; [ix, iy] = gradient(<span class="built_in">i</span>); <span class="comment">% 梯度</span></span><br><span class="line">&gt;&gt; gm = <span class="built_in">sqrt</span>(ix .* ix + iy .* iy); <span class="comment">% 梯度的幅度</span></span><br><span class="line">&gt;&gt; out1 = gm;</span><br><span class="line">&gt;&gt; subplot(<span class="number">222</span>);imshow(uint8(out1), map); <span class="comment">% 打印梯度图</span></span><br><span class="line"></span><br><span class="line">&gt;&gt; out2 = <span class="built_in">i</span>;</span><br><span class="line">&gt;&gt; <span class="built_in">j</span> = <span class="built_in">find</span>(gm&gt;=<span class="number">15</span>); <span class="comment">% 梯度值大于15的，为边缘</span></span><br><span class="line">&gt;&gt; out2(<span class="built_in">j</span>) = gm(<span class="built_in">j</span>); <span class="comment">% 将图中的寻找到的 j 替换为梯度图</span></span><br><span class="line">&gt;&gt; subplot(<span class="number">223</span>);imshow(uint8(out2),map);</span><br><span class="line">&gt;&gt; </span><br><span class="line">&gt;&gt; out3 = <span class="built_in">i</span>;</span><br><span class="line">&gt;&gt; <span class="built_in">j</span> = <span class="built_in">find</span>(gm&gt;=<span class="number">20</span>); <span class="comment">% 阈值黑白化</span></span><br><span class="line">&gt;&gt; out3(<span class="built_in">j</span>) = <span class="number">255</span>;</span><br><span class="line">&gt;&gt; k = <span class="built_in">find</span>(gm&lt;<span class="number">20</span>);</span><br><span class="line">&gt;&gt; out3(k) = <span class="number">0</span>;</span><br><span class="line">&gt;&gt; subplot(<span class="number">224</span>);imshow(uint8(out3),map);</span><br></pre></td></tr></table></figure>
+<p><img src="http://res.cloudinary.com/wang-chen-yi/image/upload/v1523588496/空间滤波/22.png" alt="22"></p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+      <div>
+        <ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者：</strong>
+    王晨懿
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="http://yoursite.com/2018/04/04/2018-04-04-空间滤波与频率域滤波（一）：空间滤波/" title="空间滤波与频率域滤波（一）：空间滤波">http://yoursite.com/2018/04/04/2018-04-04-空间滤波与频率域滤波（一）：空间滤波/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>
+    本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/3.0/" rel="external nofollow" target="_blank">CC BY-NC-SA 3.0</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+
+      </div>
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/图像处理/" rel="tag"><i class="fa fa-tag"></i> 图像处理</a>
+          
+            <a href="/tags/matlab/" rel="tag"><i class="fa fa-tag"></i> matlab</a>
+          
+            <a href="/tags/滤波/" rel="tag"><i class="fa fa-tag"></i> 滤波</a>
+          
+            <a href="/tags/拉普拉斯/" rel="tag"><i class="fa fa-tag"></i> 拉普拉斯</a>
+          
+            <a href="/tags/卷积/" rel="tag"><i class="fa fa-tag"></i> 卷积</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/03/31/2018-03-31-xcode配置opencv3/" rel="next" title="Xcode配置opencv3">
+                <i class="fa fa-chevron-left"></i> Xcode配置opencv3
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/04/10/2018-04-10-空间滤波与频率域滤波（二）：频率域滤波/" rel="prev" title="空间滤波与频率域滤波（二）：频率域滤波">
+                空间滤波与频率域滤波（二）：频率域滤波 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/p1.png"
+                alt="wang" />
+            
+              <p class="site-author-name" itemprop="name">wang</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">15</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">7</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">36</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#空间滤波"><span class="nav-number">1.</span> <span class="nav-text">空间滤波</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#一、空间滤波基础"><span class="nav-number">1.1.</span> <span class="nav-text">一、空间滤波基础</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1、空间滤波机理："><span class="nav-number">1.1.1.</span> <span class="nav-text">1、空间滤波机理：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2、空间相关与卷积"><span class="nav-number">1.1.2.</span> <span class="nav-text">2、空间相关与卷积</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3、Matlab实验：滤波的实现"><span class="nav-number">1.1.3.</span> <span class="nav-text">3、Matlab实验：滤波的实现</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1）基础用法：imfilter函数-–-5-5的均值滤波"><span class="nav-number">1.1.3.1.</span> <span class="nav-text">1）基础用法：imfilter函数 – 5 * 5的均值滤波</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2）相关和卷积"><span class="nav-number">1.1.3.2.</span> <span class="nav-text">2）相关和卷积</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3）边界填充选项"><span class="nav-number">1.1.3.3.</span> <span class="nav-text">3）边界填充选项</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4）预定义滤波器-核-fspecial函数"><span class="nav-number">1.1.3.4.</span> <span class="nav-text">4）预定义滤波器(核) - fspecial函数</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#二、平滑空间滤波器"><span class="nav-number">1.2.</span> <span class="nav-text">二、平滑空间滤波器</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1、平滑线性滤波器"><span class="nav-number">1.2.1.</span> <span class="nav-text">1、平滑线性滤波器</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2、统计排序（非线性）滤波器"><span class="nav-number">1.2.2.</span> <span class="nav-text">2、统计排序（非线性）滤波器</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3、Matlab实验：图像的统计特性"><span class="nav-number">1.2.3.</span> <span class="nav-text">3、Matlab实验：图像的统计特性</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1）图像均值"><span class="nav-number">1.2.3.1.</span> <span class="nav-text">1）图像均值</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2）图像的标准差"><span class="nav-number">1.2.3.2.</span> <span class="nav-text">2）图像的标准差</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3）图像的相关系数"><span class="nav-number">1.2.3.3.</span> <span class="nav-text">3）图像的相关系数</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4）图像的等高线"><span class="nav-number">1.2.3.4.</span> <span class="nav-text">4）图像的等高线</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#三、锐化空间滤波器"><span class="nav-number">1.3.</span> <span class="nav-text">三、锐化空间滤波器</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1、使用二阶微分进行图像锐化-拉普拉斯算子"><span class="nav-number">1.3.1.</span> <span class="nav-text">1、使用二阶微分进行图像锐化-拉普拉斯算子</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2、非锐化掩蔽和高提升滤波"><span class="nav-number">1.3.2.</span> <span class="nav-text">2、非锐化掩蔽和高提升滤波</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3、使用一阶微分（非线性）进行图像锐化-梯度"><span class="nav-number">1.3.3.</span> <span class="nav-text">3、使用一阶微分（非线性）进行图像锐化-梯度</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4、Matlab实验：空间域滤波"><span class="nav-number">1.3.4.</span> <span class="nav-text">4、Matlab实验：空间域滤波</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1）图像加入噪声"><span class="nav-number">1.3.4.1.</span> <span class="nav-text">1）图像加入噪声</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2）中值滤波器"><span class="nav-number">1.3.4.2.</span> <span class="nav-text">2）中值滤波器</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3）自适应滤波器"><span class="nav-number">1.3.4.3.</span> <span class="nav-text">3）自适应滤波器</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4）排序滤波"><span class="nav-number">1.3.4.4.</span> <span class="nav-text">4）排序滤波</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#5）线性锐化滤波"><span class="nav-number">1.3.4.5.</span> <span class="nav-text">5）线性锐化滤波</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#6）非线性锐化"><span class="nav-number">1.3.4.6.</span> <span class="nav-text">6）非线性锐化</span></a></li></ol></li></ol></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+        <div class="back-to-top">
+          <i class="fa fa-arrow-up"></i>
+          
+            <span id="scrollpercent"><span>0</span>%</span>
+          
+        </div>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">wang</span>
+
+  
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-area-chart"></i>
+    </span>
+    
+      <span class="post-meta-item-text">Site words total count&#58;</span>
+    
+    <span title="Site words total count">22.5k</span>
+  
+</div>
+
+
+<!--
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+-->
+
+
+
+<!--
+  <span class="post-meta-divider">|</span>
+-->
+
+
+
+<!--
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Gemini</a> v5.1.4</div>
+-->
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+  
+  
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/three/three.min.js"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/three/three-waves.min.js"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

@@ -1,0 +1,1300 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+  
+  
+    
+    
+  <script src="/lib/pace/pace.min.js?v=1.0.2"></script>
+  <link href="/lib/pace/pace-theme-bounce.min.css?v=1.0.2" rel="stylesheet">
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="图像处理,matlab,滤波,频率,傅里叶变换," />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="频率域滤波一、频率域滤波基础1、频率域滤波基础频率域滤波由 修改一副图像的傅里叶变换 然后计算其反变换得到处理后的结果组成。滤波公式：  低频分量 对应图像中缓慢变换的灰度分量。如室内的墙壁和少云的天空。 直流分量 等于图像的平均灰度级。同时也是未移位之前的傅里叶图像最左上角的值，移位之后的中点值。 高频分量 对应图像中变化剧烈的图像分量。如边缘和噪声。 低通滤波器 衰减高频而通过低频的滤波器 近">
+<meta name="keywords" content="图像处理,matlab,滤波,频率,傅里叶变换">
+<meta property="og:type" content="article">
+<meta property="og:title" content="空间滤波与频率域滤波（二）：频率域滤波">
+<meta property="og:url" content="http://yoursite.com/2018/04/10/2018-04-10-空间滤波与频率域滤波（二）：频率域滤波/index.html">
+<meta property="og:site_name" content="摸鱼摸到大鲨鱼">
+<meta property="og:description" content="频率域滤波一、频率域滤波基础1、频率域滤波基础频率域滤波由 修改一副图像的傅里叶变换 然后计算其反变换得到处理后的结果组成。滤波公式：  低频分量 对应图像中缓慢变换的灰度分量。如室内的墙壁和少云的天空。 直流分量 等于图像的平均灰度级。同时也是未移位之前的傅里叶图像最左上角的值，移位之后的中点值。 高频分量 对应图像中变化剧烈的图像分量。如边缘和噪声。 低通滤波器 衰减高频而通过低频的滤波器 近">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://res.cloudinary.com/wang-chen-yi/image/upload/v1523589853/频率域滤波/1.png">
+<meta property="og:image" content="http://res.cloudinary.com/wang-chen-yi/image/upload/v1523589853/频率域滤波/2.png">
+<meta property="og:image" content="http://res.cloudinary.com/wang-chen-yi/image/upload/v1523589853/频率域滤波/3.png">
+<meta property="og:image" content="http://res.cloudinary.com/wang-chen-yi/image/upload/v1523589853/频率域滤波/4.png">
+<meta property="og:image" content="http://res.cloudinary.com/wang-chen-yi/image/upload/v1523589853/频率域滤波/5.png">
+<meta property="og:image" content="http://res.cloudinary.com/wang-chen-yi/image/upload/v1523589853/频率域滤波/6.png">
+<meta property="og:image" content="http://res.cloudinary.com/wang-chen-yi/image/upload/v1523589853/频率域滤波/7.png">
+<meta property="og:image" content="http://res.cloudinary.com/wang-chen-yi/image/upload/v1523589853/频率域滤波/8.png">
+<meta property="og:image" content="http://res.cloudinary.com/wang-chen-yi/image/upload/v1523589853/频率域滤波/9.png">
+<meta property="og:image" content="http://res.cloudinary.com/wang-chen-yi/image/upload/v1523589853/频率域滤波/10.png">
+<meta property="og:image" content="http://res.cloudinary.com/wang-chen-yi/image/upload/v1523589853/频率域滤波/11.png">
+<meta property="og:image" content="http://res.cloudinary.com/wang-chen-yi/image/upload/v1523589853/频率域滤波/12.png">
+<meta property="og:image" content="http://res.cloudinary.com/wang-chen-yi/image/upload/v1523589853/频率域滤波/13.png">
+<meta property="og:image" content="http://res.cloudinary.com/wang-chen-yi/image/upload/v1523589853/频率域滤波/14.png">
+<meta property="og:image" content="http://res.cloudinary.com/wang-chen-yi/image/upload/v1523589853/频率域滤波/15.png">
+<meta property="og:image" content="http://res.cloudinary.com/wang-chen-yi/image/upload/v1523589853/频率域滤波/16.png">
+<meta property="og:image" content="http://res.cloudinary.com/wang-chen-yi/image/upload/v1523589853/频率域滤波/17.png">
+<meta property="og:image" content="http://res.cloudinary.com/wang-chen-yi/image/upload/v1523589853/频率域滤波/18.png">
+<meta property="og:image" content="http://res.cloudinary.com/wang-chen-yi/image/upload/v1523589853/频率域滤波/19.png">
+<meta property="og:image" content="http://res.cloudinary.com/wang-chen-yi/image/upload/v1523589853/频率域滤波/20.png">
+<meta property="og:image" content="http://res.cloudinary.com/wang-chen-yi/image/upload/v1523589853/频率域滤波/21.png">
+<meta property="og:image" content="http://res.cloudinary.com/wang-chen-yi/image/upload/v1523589853/频率域滤波/22.png">
+<meta property="og:image" content="http://res.cloudinary.com/wang-chen-yi/image/upload/v1523589853/频率域滤波/23.png">
+<meta property="og:image" content="http://res.cloudinary.com/wang-chen-yi/image/upload/v1523589853/频率域滤波/24.png">
+<meta property="og:image" content="http://res.cloudinary.com/wang-chen-yi/image/upload/v1523589853/频率域滤波/25.png">
+<meta property="og:image" content="http://res.cloudinary.com/wang-chen-yi/image/upload/v1523589853/频率域滤波/26.png">
+<meta property="og:image" content="http://res.cloudinary.com/wang-chen-yi/image/upload/v1523589853/频率域滤波/27.png">
+<meta property="og:updated_time" content="2018-04-13T11:47:12.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="空间滤波与频率域滤波（二）：频率域滤波">
+<meta name="twitter:description" content="频率域滤波一、频率域滤波基础1、频率域滤波基础频率域滤波由 修改一副图像的傅里叶变换 然后计算其反变换得到处理后的结果组成。滤波公式：  低频分量 对应图像中缓慢变换的灰度分量。如室内的墙壁和少云的天空。 直流分量 等于图像的平均灰度级。同时也是未移位之前的傅里叶图像最左上角的值，移位之后的中点值。 高频分量 对应图像中变化剧烈的图像分量。如边缘和噪声。 低通滤波器 衰减高频而通过低频的滤波器 近">
+<meta name="twitter:image" content="http://res.cloudinary.com/wang-chen-yi/image/upload/v1523589853/频率域滤波/1.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":true,"scrollpercent":true,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2018/04/10/2018-04-10-空间滤波与频率域滤波（二）：频率域滤波/"/>
+
+
+
+
+
+  <title>空间滤波与频率域滤波（二）：频率域滤波 | 摸鱼摸到大鲨鱼</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">摸鱼摸到大鲨鱼</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">Oh, Suger. You don't have to be so sweet.</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-history"></i> <br />
+            
+            时间轴
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off"
+             placeholder="搜索..." spellcheck="false"
+             type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/04/10/2018-04-10-空间滤波与频率域滤波（二）：频率域滤波/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="wang">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/p1.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="摸鱼摸到大鲨鱼">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">空间滤波与频率域滤波（二）：频率域滤波</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-04-10T00:00:00+08:00">
+                2018-04-10
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/数字图像处理/" itemprop="url" rel="index">
+                    <span itemprop="name">数字图像处理</span>
+                  </a>
+                </span>
+
+                
+                
+                  ， 
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/数字图像处理/matlab/" itemprop="url" rel="index">
+                    <span itemprop="name">matlab</span>
+                  </a>
+                </span>
+
+                
+                
+                  ， 
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/数字图像处理/matlab/滤波/" itemprop="url" rel="index">
+                    <span itemprop="name">滤波</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">字数统计&#58;</span>
+                
+                <span title="字数统计">
+                  2,620
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
+                
+                <span title="阅读时长">
+                  11
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="频率域滤波"><a href="#频率域滤波" class="headerlink" title="频率域滤波"></a>频率域滤波</h1><h2 id="一、频率域滤波基础"><a href="#一、频率域滤波基础" class="headerlink" title="一、频率域滤波基础"></a>一、频率域滤波基础</h2><h3 id="1、频率域滤波基础"><a href="#1、频率域滤波基础" class="headerlink" title="1、频率域滤波基础"></a>1、频率域滤波基础</h3><p>频率域滤波由 修改一副图像的傅里叶变换 然后计算其反变换得到处理后的结果组成。滤波公式：</p>
+<p><img src="http://res.cloudinary.com/wang-chen-yi/image/upload/v1523589853/频率域滤波/1.png" alt="1"></p>
+<p><strong>低频分量</strong> 对应图像中缓慢变换的灰度分量。如室内的墙壁和少云的天空。</p>
+<p><strong>直流分量 </strong>等于图像的平均灰度级。同时也是未移位之前的傅里叶图像最左上角的值，移位之后的中点值。</p>
+<p><strong>高频分量</strong> 对应图像中变化剧烈的图像分量。如边缘和噪声。</p>
+<p><strong>低通滤波器 </strong>衰减高频而通过低频的滤波器 近似称为，将模糊一副图像。</p>
+<p><strong>高通滤波器 </strong>与之相反的称为，将增强尖锐的细节，但是将导致图像的对比度降低。原因是高通滤波器消去了直流项。对滤波器加上一个小常数不会印象尖锐性，但是它的确能放置直流项的消除，并且保留色调。</p>
+<h3 id="2、频率域滤波步骤小结"><a href="#2、频率域滤波步骤小结" class="headerlink" title="2、频率域滤波步骤小结"></a>2、频率域滤波步骤小结</h3><p>1）给定一副大小为 M×N 的输入图像 f(x, y)，使用参数P、Q填充图像，使 P = 2M，Q = 2N</p>
+<p>2）对 f(x, y) 添加必要数量的 0，形成大小为 P×Q 的填充后图像 fp(x, y)</p>
+<p>3）使用(-1)^(x + y) 乘以 fp(x, y)，将其移到变换的中心。</p>
+<p>4）<strong>计算步骤3的DFT</strong>，得到 F(u, v)</p>
+<p>5）生成一个实对称滤波函数 H(u, v)，大小为 P×Q，中心为 (P/2, Q/2) 。然后计算 G(u, v) = H(u, v)F(u, v)；即G(i, k) = H(i, k) * F(i, k)。</p>
+<p>6）得到处理后的图像：</p>
+<p><img src="http://res.cloudinary.com/wang-chen-yi/image/upload/v1523589853/频率域滤波/2.png" alt="2"></p>
+<p>7）通过从gp(x, y) 的左上象限提取 M×N，得到最终处理结果 g(x, y)。</p>
+<p>用图像显示：</p>
+<p><img src="http://res.cloudinary.com/wang-chen-yi/image/upload/v1523589853/频率域滤波/3.png" alt="3"></p>
+<h3 id="3、空间和频率域滤波之间的对应"><a href="#3、空间和频率域滤波之间的对应" class="headerlink" title="3、空间和频率域滤波之间的对应"></a>3、空间和频率域滤波之间的对应</h3><p>空间域和频率域滤波之前的纽带是 <strong>卷积定理</strong>。可得 h(x, y)为空间滤波器，H(u, v)为频率域滤波器。h(x, y)可以由频率域滤波器对一个冲激的响应得到。并且因为 h(x, y) ↔ H(u, v)，这样的离散实现中所有数值都是有限的，这样的滤波器称为 <em>有限冲激响应(FIR)滤波器</em>。</p>
+<p><img src="http://res.cloudinary.com/wang-chen-yi/image/upload/v1523589853/频率域滤波/4.png" alt="4"></p>
+<p><img src="http://res.cloudinary.com/wang-chen-yi/image/upload/v1523589853/频率域滤波/5.png" alt="5"></p>
+<h2 id="二、使用频率域滤波平滑图像"><a href="#二、使用频率域滤波平滑图像" class="headerlink" title="二、使用频率域滤波平滑图像"></a>二、使用频率域滤波平滑图像</h2><p>布特沃斯滤波器有一个参数，称为滤波器的“阶数”，当阶数值较高时，布特沃斯滤波器接近于理想滤波器，对于较低的阶数值，布特沃斯滤波器更像高斯滤波器。</p>
+<h3 id="1、理想低通滤波器"><a href="#1、理想低通滤波器" class="headerlink" title="1、理想低通滤波器"></a>1、理想低通滤波器</h3><p>在以原点为中心，以D0位半径的圆内，无衰减的通过所有频率，而在圆外‘切断’所有频率的二维低通滤波器，称为理想低通滤波器 (ILPF) 。由下面的函数确定</p>
+<p><img src="http://res.cloudinary.com/wang-chen-yi/image/upload/v1523589853/频率域滤波/6.png" alt="6"></p>
+<p>其中PQ为填充后的尺寸。理想这一名称表明在半斤为D0的圆内，所有频率无衰减的通过，而在圆外的所有频率则完全被滤除。</p>
+<p>理想低通滤波器存在“振铃”情况，ILPF的模糊和振铃特性可以使用卷积定理来解释。因为ILPF在频率域的剖面图类似于盒装滤波器，所以相应的空间滤波器具有 sinc 函数的形状。空间域滤波可以通过h(x, y)和图像卷积来实现。sinc函数的中心波瓣是引起模糊的主因，而外侧较小的波瓣是造成振铃的主要原因。所以理想低通滤波器并不是十分实用。</p>
+<h3 id="2、布特沃斯低通滤波器"><a href="#2、布特沃斯低通滤波器" class="headerlink" title="2、布特沃斯低通滤波器"></a>2、布特沃斯低通滤波器</h3><p>截止频率位于距原点D0处的n阶布特沃斯低通滤波器（BLPF）的传递函数定义为：</p>
+<p><img src="http://res.cloudinary.com/wang-chen-yi/image/upload/v1523589853/频率域滤波/7.png" alt="7"></p>
+<p>其中BLPF函数的透视图、图像显示和径向剖面图：</p>
+<p><img src="http://res.cloudinary.com/wang-chen-yi/image/upload/v1523589853/频率域滤波/8.png" alt="8"></p>
+<p>在空间域的一阶波特沃斯滤波器没有振铃现象。在二阶滤波器中，振铃现象通常很难察觉。然而阶数越大，振铃现象越明显。</p>
+<p><img src="http://res.cloudinary.com/wang-chen-yi/image/upload/v1523589853/频率域滤波/9.png" alt="9"></p>
+<h3 id="3、高斯低通滤波器"><a href="#3、高斯低通滤波器" class="headerlink" title="3、高斯低通滤波器"></a>3、高斯低通滤波器</h3><p>一维低通滤波器（GLPF）在上一节有介绍，目的是寻找空间域和频率域之间的重要联系。这些滤波器的二维形式：</p>
+<p><img src="http://res.cloudinary.com/wang-chen-yi/image/upload/v1523589853/频率域滤波/10.png" alt="10"></p>
+<p>因为GLPF的傅里叶反变换也是高斯的，所以通过IDFT得到的空间高斯滤波器将没有振铃。</p>
+<p><img src="http://res.cloudinary.com/wang-chen-yi/image/upload/v1523589853/频率域滤波/11.png" alt="11"></p>
+<h3 id="4、Matlab实验-低通滤波"><a href="#4、Matlab实验-低通滤波" class="headerlink" title="4、Matlab实验-低通滤波"></a>4、Matlab实验-低通滤波</h3><p>此实验按照频率域滤波步骤进行滤波处理</p>
+<figure class="highlight matlab"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line">&gt;&gt; clear all;</span><br><span class="line">&gt;&gt; <span class="built_in">i</span> = imread(<span class="string">'liftingbody.png'</span>);</span><br><span class="line">&gt;&gt; <span class="built_in">i</span> = im2double(<span class="built_in">i</span>);</span><br><span class="line">&gt;&gt; M = <span class="number">2</span> * <span class="built_in">size</span>(<span class="built_in">i</span>, <span class="number">1</span>); <span class="comment">% 将图像拓展至两倍</span></span><br><span class="line">&gt;&gt; N = <span class="number">2</span> * <span class="built_in">size</span>(<span class="built_in">i</span>, <span class="number">2</span>);</span><br><span class="line">&gt;&gt; u = -M/<span class="number">2</span>:(M/<span class="number">2</span> - <span class="number">1</span>); <span class="comment">% 因为D(u, v)是频率域(u,v)到中心的距离。所以根据公式先计算平方里面的数值。</span></span><br><span class="line">&gt;&gt; v = -N/<span class="number">2</span>:(N/<span class="number">2</span> - <span class="number">1</span>);</span><br><span class="line">&gt;&gt; [U, V] = <span class="built_in">meshgrid</span>(u, v); <span class="comment">% 然后将数值转化为一个个坐标</span></span><br><span class="line">&gt;&gt; D = <span class="built_in">sqrt</span>(U.^<span class="number">2</span> + V.^<span class="number">2</span>); <span class="comment">% 再计算D即可</span></span><br><span class="line">&gt;&gt; D0 = <span class="number">80</span>; <span class="comment">% 半径</span></span><br><span class="line">&gt;&gt; H1 = double(D &lt;= D0); <span class="comment">% 理想低通滤波器的公式</span></span><br><span class="line">&gt;&gt; J1 = fftshift(fft2(<span class="built_in">i</span>, <span class="built_in">size</span>(H1, <span class="number">1</span>), <span class="built_in">size</span>(H1, <span class="number">2</span>))); <span class="comment">% 对图像进行傅里叶变换到 频率域，并且进行移位</span></span><br><span class="line">&gt;&gt; K1 = J1 .* H1; <span class="comment">% 然后再频率域进行点乘</span></span><br><span class="line">&gt;&gt; L1 = ifft2(ifftshift(K1)); <span class="comment">% 计算完后计算反傅里叶变换</span></span><br><span class="line">&gt;&gt; L1 = L1(<span class="number">1</span>:<span class="built_in">size</span>(<span class="built_in">i</span>, <span class="number">1</span>), <span class="number">1</span>:<span class="built_in">size</span>(<span class="built_in">i</span>, <span class="number">2</span>)); <span class="comment">% 然后取左上方的值</span></span><br><span class="line">&gt;&gt; subplot(<span class="number">221</span>);imshow(<span class="built_in">i</span>);</span><br><span class="line">&gt;&gt; title(<span class="string">'原始图像'</span>);</span><br><span class="line">&gt;&gt; subplot(<span class="number">222</span>);imshow(L1);</span><br><span class="line">&gt;&gt; title(<span class="string">'理想低通滤波器'</span>);</span><br><span class="line">&gt;&gt; </span><br><span class="line">&gt;&gt; n = <span class="number">6</span>; <span class="comment">% 会存在振铃现象</span></span><br><span class="line">&gt;&gt; H2 = <span class="number">1.</span>/(<span class="number">1</span>+(D./D0).^(<span class="number">2</span>*n)); <span class="comment">% 布斯特沃低通滤波器公式</span></span><br><span class="line">&gt;&gt; J2 = fftshift(fft2(<span class="built_in">i</span>, <span class="built_in">size</span>(H2, <span class="number">1</span>), <span class="built_in">size</span>(H2, <span class="number">2</span>)));</span><br><span class="line">&gt;&gt; K2 = J2 .* H2;</span><br><span class="line">&gt;&gt; L2 = ifft2(ifftshift(K2));</span><br><span class="line">&gt;&gt; L2 = L2(<span class="number">1</span>:<span class="built_in">size</span>(<span class="built_in">i</span>, <span class="number">1</span>), <span class="number">1</span>:<span class="built_in">size</span>(<span class="built_in">i</span>, <span class="number">2</span>));</span><br><span class="line">&gt;&gt; subplot(<span class="number">223</span>);imshow(L2);</span><br><span class="line">&gt;&gt; title(<span class="string">'布斯特沃低通滤波器'</span>);</span><br><span class="line">&gt;&gt; </span><br><span class="line">&gt;&gt; H3 = <span class="built_in">exp</span>(-(D.^<span class="number">2</span>)./(<span class="number">2</span>*(D0.^<span class="number">2</span>))); <span class="comment">% 高斯低通滤波器公式</span></span><br><span class="line">&gt;&gt; J3 = fftshift(fft2(<span class="built_in">i</span>, <span class="built_in">size</span>(H3, <span class="number">1</span>), <span class="built_in">size</span>(H3, <span class="number">2</span>)));</span><br><span class="line">&gt;&gt; K3 = J3.*H3;</span><br><span class="line">&gt;&gt; L3 = ifft2(ifftshift(K3));</span><br><span class="line">&gt;&gt; L3 = L3(<span class="number">1</span>:<span class="built_in">size</span>(<span class="built_in">i</span>, <span class="number">1</span>), <span class="number">1</span>:<span class="built_in">size</span>(<span class="built_in">i</span>, <span class="number">2</span>));</span><br><span class="line">&gt;&gt; subplot(<span class="number">224</span>);imshow(L3);</span><br><span class="line">&gt;&gt; title(<span class="string">'高斯低通滤波器'</span>);</span><br></pre></td></tr></table></figure>
+<p><img src="http://res.cloudinary.com/wang-chen-yi/image/upload/v1523589853/频率域滤波/12.png" alt="12"></p>
+<p>三种滤波器公式总结：</p>
+<p><img src="http://res.cloudinary.com/wang-chen-yi/image/upload/v1523589853/频率域滤波/13.png" alt="13"></p>
+<h2 id="三、使用频率域滤波锐化图像"><a href="#三、使用频率域滤波锐化图像" class="headerlink" title="三、使用频率域滤波锐化图像"></a>三、使用频率域滤波锐化图像</h2><p>一个高通滤波器是从给定的低通滤波器用下式得到的：</p>
+<p><img src="http://res.cloudinary.com/wang-chen-yi/image/upload/v1523589853/频率域滤波/14.png" alt="14"></p>
+<h3 id="1、理想高通滤波器"><a href="#1、理想高通滤波器" class="headerlink" title="1、理想高通滤波器"></a>1、理想高通滤波器</h3><p>二维理想高通滤波器（IHPF）定义为：</p>
+<p><img src="http://res.cloudinary.com/wang-chen-yi/image/upload/v1523589853/频率域滤波/15.png" alt="15"></p>
+<p><img src="http://res.cloudinary.com/wang-chen-yi/image/upload/v1523589853/频率域滤波/16.png" alt="16"></p>
+<h3 id="2、布特沃斯高通滤波器"><a href="#2、布特沃斯高通滤波器" class="headerlink" title="2、布特沃斯高通滤波器"></a>2、布特沃斯高通滤波器</h3><p>截止频率为D0的n阶布特沃斯高通滤波器（BHPF）定义为：</p>
+<p><img src="http://res.cloudinary.com/wang-chen-yi/image/upload/v1523589853/频率域滤波/17.png" alt="17"></p>
+<p>与低通滤波器一样，布特沃斯高通滤波器比IHPF更平滑，截止频率越大，使用BHPF得到的图像就越平滑</p>
+<h3 id="3、高斯高通滤波器"><a href="#3、高斯高通滤波器" class="headerlink" title="3、高斯高通滤波器"></a>3、高斯高通滤波器</h3><p>截止频率出在距频率矩形中心为D0的高斯高通滤波器（GHPF）的传递函数由下式给出：</p>
+<p><img src="http://res.cloudinary.com/wang-chen-yi/image/upload/v1523589853/频率域滤波/18.png" alt="18"></p>
+<p>三种高通滤波器总结：</p>
+<p><img src="http://res.cloudinary.com/wang-chen-yi/image/upload/v1523589853/频率域滤波/19.png" alt="19"></p>
+<h3 id="4、频率域的拉普拉斯算子"><a href="#4、频率域的拉普拉斯算子" class="headerlink" title="4、频率域的拉普拉斯算子"></a>4、频率域的拉普拉斯算子</h3><p>拉普拉斯算子可由如下滤波器在频率域实现：</p>
+<p><img src="http://res.cloudinary.com/wang-chen-yi/image/upload/v1523589853/频率域滤波/20.png" alt="20"></p>
+<p>在频率域，4.9-8可写为：</p>
+<p><img src="http://res.cloudinary.com/wang-chen-yi/image/upload/v1523589853/频率域滤波/21.png" alt="21"></p>
+<h3 id="5、钝化模板、高提升滤波和高频强调滤波"><a href="#5、钝化模板、高提升滤波和高频强调滤波" class="headerlink" title="5、钝化模板、高提升滤波和高频强调滤波"></a>5、钝化模板、高提升滤波和高频强调滤波</h3><p>在空间滤波中提到过的钝化模板，在频率域方法中由下式给出：</p>
+<p><img src="http://res.cloudinary.com/wang-chen-yi/image/upload/v1523589853/频率域滤波/22.png" alt="22"></p>
+<p><img src="http://res.cloudinary.com/wang-chen-yi/image/upload/v1523589853/频率域滤波/23.png" alt="23"></p>
+<h3 id="6、同态滤波"><a href="#6、同态滤波" class="headerlink" title="6、同态滤波"></a>6、同态滤波</h3><p>图像的照射分量通常由慢的空间变化来表征，而反射分量往往引起突变，特别是在不同物体的连接部分，这些特性导致图像取对数后的傅里叶变换的低频成分和照射相联系，高频成分与反射相联系。虽然这些联系只是初略的近似，但是在图像滤波中是有效的。</p>
+<p>使用同态滤波器可以更好的控制照射分量和反射分量。这种控制需要指定一个滤波器函数H(u, v)，它可用不同的可控方法影响傅里叶变换的低频和高频成分。</p>
+<p><img src="http://res.cloudinary.com/wang-chen-yi/image/upload/v1523589853/频率域滤波/24.png" alt="24"></p>
+<p>如果 yL和yH选定，而 yL\&lt;1，yH>1，那么上图的滤波器函数趋向于衰减低频（照射）的贡献，而增强高频（反射）的贡献，最终结果是同时进行动态范围的压缩和对比度的增强。常数c控制函数坡度的锐利度，在yL和yH之间过渡。</p>
+<h3 id="7、Matlab实验–高通滤波器"><a href="#7、Matlab实验–高通滤波器" class="headerlink" title="7、Matlab实验–高通滤波器"></a>7、Matlab实验–高通滤波器</h3><figure class="highlight matlab"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line">&gt;&gt; clear all;</span><br><span class="line">&gt;&gt; <span class="built_in">i</span> = imread(<span class="string">'coins.png'</span>);</span><br><span class="line">&gt;&gt; <span class="built_in">i</span> = im2double(<span class="built_in">i</span>);</span><br><span class="line">&gt;&gt; subplot(<span class="number">221</span>);imshow(<span class="built_in">i</span>);</span><br><span class="line">&gt;&gt; title(<span class="string">'原始图像'</span>);</span><br><span class="line">&gt;&gt; </span><br><span class="line">&gt;&gt; M = <span class="number">2</span> * <span class="built_in">size</span>(<span class="built_in">i</span>, <span class="number">1</span>);</span><br><span class="line">&gt;&gt; N = <span class="number">2</span> * <span class="built_in">size</span>(<span class="built_in">i</span>, <span class="number">2</span>);</span><br><span class="line">&gt;&gt; u = -M/<span class="number">2</span>:(M/<span class="number">2</span> - <span class="number">1</span>);</span><br><span class="line">&gt;&gt; v = -N/<span class="number">2</span>:(N/<span class="number">2</span> - <span class="number">1</span>);</span><br><span class="line">&gt;&gt; [U, V] = <span class="built_in">meshgrid</span>(u, v);</span><br><span class="line">&gt;&gt; D = <span class="built_in">sqrt</span>(U.^<span class="number">2</span>+V.^<span class="number">2</span>);</span><br><span class="line">&gt;&gt; D0 = <span class="number">30</span>;</span><br><span class="line">&gt;&gt; n = <span class="number">6</span>;</span><br><span class="line">&gt;&gt; H2 = <span class="number">1.</span>/(<span class="number">1</span> + (D0./D).^(<span class="number">2</span> * n));</span><br><span class="line">&gt;&gt; J2 = fftshift(fft2(<span class="built_in">i</span>, <span class="built_in">size</span>(H2, <span class="number">1</span>), <span class="built_in">size</span>(H2, <span class="number">2</span>)));</span><br><span class="line">&gt;&gt; K2 = J2 .* H2;</span><br><span class="line">&gt;&gt; L2 = ifft2(ifftshift(K2));</span><br><span class="line">&gt;&gt; L2 = L2(<span class="number">1</span>:<span class="built_in">size</span>(<span class="built_in">i</span>,<span class="number">1</span>), <span class="number">1</span>:<span class="built_in">size</span>(<span class="built_in">i</span>, <span class="number">2</span>));</span><br><span class="line">&gt;&gt; subplot(<span class="number">222</span>);imshow(L2);</span><br><span class="line">&gt;&gt; title(<span class="string">'布特沃斯高通滤波器'</span>);</span><br><span class="line">&gt;&gt; </span><br><span class="line">&gt;&gt; H3 = <span class="number">1</span> - <span class="built_in">exp</span>(-(D.^<span class="number">2</span>)./(<span class="number">2</span> * (D0.^<span class="number">2</span>)));</span><br><span class="line">&gt;&gt; J3 = fftshift(fft2(<span class="built_in">i</span>, <span class="built_in">size</span>(H3, <span class="number">1</span>), <span class="built_in">size</span>(H3, <span class="number">2</span>)));</span><br><span class="line">&gt;&gt; K3 = J3.*H3;</span><br><span class="line">&gt;&gt; L3 = ifft2(ifftshift(K3));</span><br><span class="line">&gt;&gt; L3 = L3(<span class="number">1</span>:<span class="built_in">size</span>(<span class="built_in">i</span>,<span class="number">1</span>), <span class="number">1</span>:<span class="built_in">size</span>(<span class="built_in">i</span>, <span class="number">2</span>));</span><br><span class="line">&gt;&gt; subplot(<span class="number">223</span>);imshow(L3);</span><br><span class="line">&gt;&gt; title(<span class="string">'高斯高通滤波器'</span>);</span><br></pre></td></tr></table></figure>
+<p><img src="http://res.cloudinary.com/wang-chen-yi/image/upload/v1523589853/频率域滤波/25.png" alt="25"></p>
+<h2 id="四、选择性滤波"><a href="#四、选择性滤波" class="headerlink" title="四、选择性滤波"></a>四、选择性滤波</h2><h3 id="1、带阻滤波器和带通滤波器"><a href="#1、带阻滤波器和带通滤波器" class="headerlink" title="1、带阻滤波器和带通滤波器"></a>1、带阻滤波器和带通滤波器</h3><p><img src="http://res.cloudinary.com/wang-chen-yi/image/upload/v1523589853/频率域滤波/26.png" alt="26"></p>
+<h3 id="2、Matlab实验-—-带阻滤波器"><a href="#2、Matlab实验-—-带阻滤波器" class="headerlink" title="2、Matlab实验 — 带阻滤波器"></a>2、Matlab实验 — 带阻滤波器</h3><figure class="highlight matlab"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line">&gt;&gt; clear all;</span><br><span class="line">&gt;&gt; <span class="built_in">i</span> = imread(<span class="string">'coins.png'</span>);</span><br><span class="line">&gt;&gt; subplot(<span class="number">221</span>);imshow(<span class="built_in">i</span>);</span><br><span class="line">&gt;&gt; title(<span class="string">'原始图像'</span>);</span><br><span class="line">&gt;&gt; </span><br><span class="line">&gt;&gt; <span class="built_in">i</span> = imnoise(<span class="built_in">i</span>, <span class="string">'gaussian'</span>, <span class="number">0</span>, <span class="number">0.015</span>); <span class="comment">% 添加噪声</span></span><br><span class="line">&gt;&gt; subplot(<span class="number">222</span>);imshow(<span class="built_in">i</span>);</span><br><span class="line">&gt;&gt; title(<span class="string">'带噪声图像'</span>);</span><br><span class="line">&gt;&gt; </span><br><span class="line">&gt;&gt; <span class="built_in">i</span> = im2double(<span class="built_in">i</span>);</span><br><span class="line">&gt;&gt; M = <span class="number">2</span> * <span class="built_in">size</span>(<span class="built_in">i</span>, <span class="number">1</span>);</span><br><span class="line">&gt;&gt; N = <span class="number">2</span> * <span class="built_in">size</span>(<span class="built_in">i</span>, <span class="number">2</span>);</span><br><span class="line">&gt;&gt; u = -M/<span class="number">2</span>:(M/<span class="number">2</span> - <span class="number">1</span>);</span><br><span class="line">&gt;&gt; v = -N/<span class="number">2</span>:(N/<span class="number">2</span> - <span class="number">1</span>);</span><br><span class="line">&gt;&gt; [U, V] = <span class="built_in">meshgrid</span>(u, v);</span><br><span class="line">&gt;&gt; d = <span class="built_in">sqrt</span>(U.^<span class="number">2</span> + V.^<span class="number">2</span>);</span><br><span class="line">&gt;&gt; d0 = <span class="number">50</span>;</span><br><span class="line">&gt;&gt; w = <span class="number">30</span>;</span><br><span class="line">&gt;&gt; h1 = double(or(d &lt;(d0 - w / <span class="number">2</span>), d&gt; d0 + w/<span class="number">2</span>));</span><br><span class="line">&gt;&gt; j1 = fftshift(fft2(<span class="built_in">i</span>, <span class="built_in">size</span>(h1, <span class="number">1</span>), <span class="built_in">size</span>(h1, <span class="number">2</span>)));</span><br><span class="line">&gt;&gt; k1 = j1 .* h1;</span><br><span class="line">&gt;&gt; l1 = ifft2(ifftshift(k1));</span><br><span class="line">&gt;&gt; l1 = l1(<span class="number">1</span>:<span class="built_in">size</span>(<span class="built_in">i</span>, <span class="number">1</span>), <span class="number">1</span>:<span class="built_in">size</span>(<span class="built_in">i</span>, <span class="number">2</span>));</span><br><span class="line">&gt;&gt; subplot(<span class="number">223</span>);imshow(l1);</span><br><span class="line">&gt;&gt; title(<span class="string">'理想带阻滤波器'</span>);</span><br><span class="line">&gt;&gt; </span><br><span class="line">&gt;&gt; n = <span class="number">6</span>;</span><br><span class="line">&gt;&gt; h1 = <span class="number">1.</span>/((<span class="number">1</span> + ((d.*w)./(d.^<span class="number">2</span> - d0.^<span class="number">2</span>)).^(<span class="number">2</span> * n)));</span><br><span class="line">&gt;&gt; h2 = h1;</span><br><span class="line">&gt;&gt; j2 =fftshift(fft2(<span class="built_in">i</span>, <span class="built_in">size</span>(h2, <span class="number">1</span>), <span class="built_in">size</span>(h2, <span class="number">2</span>)));</span><br><span class="line">&gt;&gt; k2 = j2 .* h2;</span><br><span class="line">&gt;&gt; l2 = ifft2(ifftshift(k2));</span><br><span class="line">&gt;&gt; l2 = l2(<span class="number">1</span>:<span class="built_in">size</span>(<span class="built_in">i</span>, <span class="number">1</span>), <span class="number">1</span>:<span class="built_in">size</span>(<span class="built_in">i</span>, <span class="number">2</span>));</span><br><span class="line">&gt;&gt; subplot(<span class="number">224</span>);imshow(l2);</span><br><span class="line">&gt;&gt; title(<span class="string">'布特沃斯带阻滤波器'</span>);</span><br></pre></td></tr></table></figure>
+<p><img src="http://res.cloudinary.com/wang-chen-yi/image/upload/v1523589853/频率域滤波/27.png" alt="27"></p>
+<h3 id="3、Matlab实验-—-同态滤波器"><a href="#3、Matlab实验-—-同态滤波器" class="headerlink" title="3、Matlab实验 — 同态滤波器"></a>3、Matlab实验 — 同态滤波器</h3><figure class="highlight matlab"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"> </span><br><span class="line">&gt;&gt; <span class="built_in">i</span> = imread(<span class="string">'lean.jpg'</span>);</span><br><span class="line">&gt;&gt; subplot(<span class="number">121</span>);imshow(<span class="built_in">i</span>);</span><br><span class="line">&gt;&gt; title(<span class="string">'原始图像'</span>);</span><br><span class="line">&gt;&gt; <span class="built_in">j</span> = double(<span class="built_in">i</span>);</span><br><span class="line">&gt;&gt; f= fft2(<span class="built_in">j</span>);</span><br><span class="line">&gt;&gt; g = fftshift(f);</span><br><span class="line">&gt;&gt; [M, N] = <span class="built_in">size</span>(f);</span><br><span class="line">&gt;&gt; d0 = <span class="number">10</span>;</span><br><span class="line">&gt;&gt; r1 = <span class="number">0.5</span>;</span><br><span class="line">&gt;&gt; rh = <span class="number">2</span>;</span><br><span class="line">&gt;&gt; c = <span class="number">4</span>;</span><br><span class="line">&gt;&gt; n1 = <span class="built_in">floor</span>(M/<span class="number">2</span>);</span><br><span class="line">&gt;&gt; n2 = <span class="built_in">floor</span>(N/<span class="number">2</span>);</span><br><span class="line">&gt;&gt; <span class="keyword">for</span> <span class="built_in">i</span> = <span class="number">1</span>:M</span><br><span class="line">       <span class="keyword">for</span> <span class="built_in">j</span> = <span class="number">1</span>:N</span><br><span class="line">           d = <span class="built_in">sqrt</span>((<span class="built_in">i</span> - n1)^<span class="number">2</span> + (<span class="built_in">j</span> - n2)^<span class="number">2</span>);</span><br><span class="line">           h = (rh - r1) * (1 - exp( -c * (d .^2 /d0.^2))) + r1;</span><br><span class="line">           g(<span class="built_in">i</span>, <span class="built_in">j</span>) = h * g(<span class="built_in">i</span>, <span class="built_in">j</span>);</span><br><span class="line">       <span class="keyword">end</span></span><br><span class="line"><span class="keyword">end</span></span><br><span class="line">&gt;&gt; g = ifftshift(g);</span><br><span class="line">&gt;&gt; g = uint8(<span class="built_in">real</span>(ifft2(g)));</span><br><span class="line">&gt;&gt; subplot(<span class="number">122</span>);imshow(g);</span><br><span class="line">&gt;&gt; title(<span class="string">'同态滤波器'</span>);</span><br></pre></td></tr></table></figure>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+      <div>
+        <ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者：</strong>
+    王晨懿
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="http://yoursite.com/2018/04/10/2018-04-10-空间滤波与频率域滤波（二）：频率域滤波/" title="空间滤波与频率域滤波（二）：频率域滤波">http://yoursite.com/2018/04/10/2018-04-10-空间滤波与频率域滤波（二）：频率域滤波/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>
+    本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/3.0/" rel="external nofollow" target="_blank">CC BY-NC-SA 3.0</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+
+      </div>
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/图像处理/" rel="tag"><i class="fa fa-tag"></i> 图像处理</a>
+          
+            <a href="/tags/matlab/" rel="tag"><i class="fa fa-tag"></i> matlab</a>
+          
+            <a href="/tags/滤波/" rel="tag"><i class="fa fa-tag"></i> 滤波</a>
+          
+            <a href="/tags/频率/" rel="tag"><i class="fa fa-tag"></i> 频率</a>
+          
+            <a href="/tags/傅里叶变换/" rel="tag"><i class="fa fa-tag"></i> 傅里叶变换</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/04/04/2018-04-04-空间滤波与频率域滤波（一）：空间滤波/" rel="next" title="空间滤波与频率域滤波（一）：空间滤波">
+                <i class="fa fa-chevron-left"></i> 空间滤波与频率域滤波（一）：空间滤波
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/04/13/2018-04-13-Mac + Github Pages + Hexo + Next搭建个人博客/" rel="prev" title="Mac + Github Pages + Hexo + Next搭建个人博客">
+                Mac + Github Pages + Hexo + Next搭建个人博客 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/p1.png"
+                alt="wang" />
+            
+              <p class="site-author-name" itemprop="name">wang</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">15</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">7</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">36</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#频率域滤波"><span class="nav-number">1.</span> <span class="nav-text">频率域滤波</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#一、频率域滤波基础"><span class="nav-number">1.1.</span> <span class="nav-text">一、频率域滤波基础</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1、频率域滤波基础"><span class="nav-number">1.1.1.</span> <span class="nav-text">1、频率域滤波基础</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2、频率域滤波步骤小结"><span class="nav-number">1.1.2.</span> <span class="nav-text">2、频率域滤波步骤小结</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3、空间和频率域滤波之间的对应"><span class="nav-number">1.1.3.</span> <span class="nav-text">3、空间和频率域滤波之间的对应</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#二、使用频率域滤波平滑图像"><span class="nav-number">1.2.</span> <span class="nav-text">二、使用频率域滤波平滑图像</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1、理想低通滤波器"><span class="nav-number">1.2.1.</span> <span class="nav-text">1、理想低通滤波器</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2、布特沃斯低通滤波器"><span class="nav-number">1.2.2.</span> <span class="nav-text">2、布特沃斯低通滤波器</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3、高斯低通滤波器"><span class="nav-number">1.2.3.</span> <span class="nav-text">3、高斯低通滤波器</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4、Matlab实验-低通滤波"><span class="nav-number">1.2.4.</span> <span class="nav-text">4、Matlab实验-低通滤波</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#三、使用频率域滤波锐化图像"><span class="nav-number">1.3.</span> <span class="nav-text">三、使用频率域滤波锐化图像</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1、理想高通滤波器"><span class="nav-number">1.3.1.</span> <span class="nav-text">1、理想高通滤波器</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2、布特沃斯高通滤波器"><span class="nav-number">1.3.2.</span> <span class="nav-text">2、布特沃斯高通滤波器</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3、高斯高通滤波器"><span class="nav-number">1.3.3.</span> <span class="nav-text">3、高斯高通滤波器</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4、频率域的拉普拉斯算子"><span class="nav-number">1.3.4.</span> <span class="nav-text">4、频率域的拉普拉斯算子</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5、钝化模板、高提升滤波和高频强调滤波"><span class="nav-number">1.3.5.</span> <span class="nav-text">5、钝化模板、高提升滤波和高频强调滤波</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#6、同态滤波"><span class="nav-number">1.3.6.</span> <span class="nav-text">6、同态滤波</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#7、Matlab实验–高通滤波器"><span class="nav-number">1.3.7.</span> <span class="nav-text">7、Matlab实验–高通滤波器</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#四、选择性滤波"><span class="nav-number">1.4.</span> <span class="nav-text">四、选择性滤波</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1、带阻滤波器和带通滤波器"><span class="nav-number">1.4.1.</span> <span class="nav-text">1、带阻滤波器和带通滤波器</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2、Matlab实验-—-带阻滤波器"><span class="nav-number">1.4.2.</span> <span class="nav-text">2、Matlab实验 — 带阻滤波器</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3、Matlab实验-—-同态滤波器"><span class="nav-number">1.4.3.</span> <span class="nav-text">3、Matlab实验 — 同态滤波器</span></a></li></ol></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+        <div class="back-to-top">
+          <i class="fa fa-arrow-up"></i>
+          
+            <span id="scrollpercent"><span>0</span>%</span>
+          
+        </div>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">wang</span>
+
+  
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-area-chart"></i>
+    </span>
+    
+      <span class="post-meta-item-text">Site words total count&#58;</span>
+    
+    <span title="Site words total count">22.5k</span>
+  
+</div>
+
+
+<!--
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+-->
+
+
+
+<!--
+  <span class="post-meta-divider">|</span>
+-->
+
+
+
+<!--
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Gemini</a> v5.1.4</div>
+-->
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+  
+  
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/three/three.min.js"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/three/three-waves.min.js"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

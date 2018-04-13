@@ -1,0 +1,1339 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+  
+  
+    
+    
+  <script src="/lib/pace/pace.min.js?v=1.0.2"></script>
+  <link href="/lib/pace/pace-theme-bounce.min.css?v=1.0.2" rel="stylesheet">
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="centos,wordpress,nextcloud,nginx,mysql,php," />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="CentOS7 安装Nginx、PHP、MySQLCentOS版本：https://segmentfault.com/a/1190000005348317 查看内核版本： 1cat /proc/version 查看系统版本： 12345678910111213# ls /etc|grep releasecentos-releasecentos-release-upstreamos-releaser">
+<meta name="keywords" content="centos,wordpress,nextcloud,nginx,mysql,php">
+<meta property="og:type" content="article">
+<meta property="og:title" content="CentOS7 通过SSH安装wordpress和nextcloud详细过程（CentOS+Nginx+MySQL+PHP7）">
+<meta property="og:url" content="http://yoursite.com/2018/03/30/2018-03-30-CentOS7-通过SSH安装wordpress和nextcloud详细过程（CentOS+Nginx+MySQL+PHP7）/index.html">
+<meta property="og:site_name" content="摸鱼摸到大鲨鱼">
+<meta property="og:description" content="CentOS7 安装Nginx、PHP、MySQLCentOS版本：https://segmentfault.com/a/1190000005348317 查看内核版本： 1cat /proc/version 查看系统版本： 12345678910111213# ls /etc|grep releasecentos-releasecentos-release-upstreamos-releaser">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2018-04-13T11:25:27.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="CentOS7 通过SSH安装wordpress和nextcloud详细过程（CentOS+Nginx+MySQL+PHP7）">
+<meta name="twitter:description" content="CentOS7 安装Nginx、PHP、MySQLCentOS版本：https://segmentfault.com/a/1190000005348317 查看内核版本： 1cat /proc/version 查看系统版本： 12345678910111213# ls /etc|grep releasecentos-releasecentos-release-upstreamos-releaser">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":true,"scrollpercent":true,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2018/03/30/2018-03-30-CentOS7-通过SSH安装wordpress和nextcloud详细过程（CentOS+Nginx+MySQL+PHP7）/"/>
+
+
+
+
+
+  <title>CentOS7 通过SSH安装wordpress和nextcloud详细过程（CentOS+Nginx+MySQL+PHP7） | 摸鱼摸到大鲨鱼</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">摸鱼摸到大鲨鱼</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">Oh, Suger. You don't have to be so sweet.</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-history"></i> <br />
+            
+            时间轴
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off"
+             placeholder="搜索..." spellcheck="false"
+             type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/03/30/2018-03-30-CentOS7-通过SSH安装wordpress和nextcloud详细过程（CentOS+Nginx+MySQL+PHP7）/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="wang">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/p1.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="摸鱼摸到大鲨鱼">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">CentOS7 通过SSH安装wordpress和nextcloud详细过程（CentOS+Nginx+MySQL+PHP7）</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-03-30T00:00:00+08:00">
+                2018-03-30
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/环境配置/" itemprop="url" rel="index">
+                    <span itemprop="name">环境配置</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">字数统计&#58;</span>
+                
+                <span title="字数统计">
+                  4,812
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
+                
+                <span title="阅读时长">
+                  27
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="CentOS7-安装Nginx、PHP、MySQL"><a href="#CentOS7-安装Nginx、PHP、MySQL" class="headerlink" title="CentOS7 安装Nginx、PHP、MySQL"></a>CentOS7 安装Nginx、PHP、MySQL</h1><h2 id="CentOS版本："><a href="#CentOS版本：" class="headerlink" title="CentOS版本："></a>CentOS版本：</h2><p><a href="https://segmentfault.com/a/1190000005348317" target="_blank" rel="noopener">https://segmentfault.com/a/1190000005348317</a></p>
+<p>查看内核版本：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">cat /proc/version</span><br></pre></td></tr></table></figure>
+<p>查看系统版本：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># ls /etc|grep release</span></span><br><span class="line"></span><br><span class="line">centos-release</span><br><span class="line">centos-release-upstream</span><br><span class="line">os-release</span><br><span class="line">redhat-release</span><br><span class="line">system-release</span><br><span class="line">system-release-cpe</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">#cat /etc/centos-release</span></span><br><span class="line"></span><br><span class="line">CentOS Linux release 7.4.1708 (Core)</span><br></pre></td></tr></table></figure>
+<h2 id="安装-nginx"><a href="#安装-nginx" class="headerlink" title="安装 nginx"></a>安装 nginx</h2><h3 id="添加EPEL仓库："><a href="#添加EPEL仓库：" class="headerlink" title="添加EPEL仓库："></a>添加EPEL仓库：</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">yum install epel-release</span><br></pre></td></tr></table></figure>
+<h3 id="使用yum安装nginx"><a href="#使用yum安装nginx" class="headerlink" title="使用yum安装nginx"></a>使用yum安装nginx</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">yum install nginx</span><br></pre></td></tr></table></figure>
+<p>一路yes yes，</p>
+<p>然后启动 nginx</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">systemctl start nginx</span><br></pre></td></tr></table></figure>
+<p>也可以通过 <code>nginx -s reload</code> 来重启nginx</p>
+<p>启动后通过IP来访问，在浏览器中输入：<code>http://server_domain_name_or_ip/</code></p>
+<p>然后可以看到nginx服务已经启动</p>
+<p>查询ip指令：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ip addr show eth0 | grep inet | awk <span class="string">'&#123; print $2; &#125;'</span> | sed <span class="string">'s/\/.*$//'</span></span><br></pre></td></tr></table></figure>
+<h2 id="安装MySQL（MariaDB）"><a href="#安装MySQL（MariaDB）" class="headerlink" title="安装MySQL（MariaDB）"></a>安装MySQL（MariaDB）</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">yum install mariadb-server mariadb</span><br></pre></td></tr></table></figure>
+<p>完成安装后，开启服务</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">systemctl start mariadb</span><br></pre></td></tr></table></figure>
+<p>接着给MySQL添加密码：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mysql_secure_installation</span><br></pre></td></tr></table></figure>
+<p>示例：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># mysql_secure_installation</span></span><br><span class="line"></span><br><span class="line">NOTE: RUNNING ALL PARTS OF THIS SCRIPT IS RECOMMENDED FOR ALL MariaDB</span><br><span class="line">      SERVERS IN PRODUCTION USE!  PLEASE READ EACH STEP CAREFULLY!</span><br><span class="line"></span><br><span class="line">In order to <span class="built_in">log</span> into MariaDB to secure it, we<span class="string">'ll need the current</span></span><br><span class="line"><span class="string">password for the root user.  If you'</span>ve just installed MariaDB, and</span><br><span class="line">you haven<span class="string">'t set the root password yet, the password will be blank,</span></span><br><span class="line"><span class="string">so you should just press enter here.</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">Enter current password for root (enter for none): </span></span><br><span class="line"><span class="string">OK, successfully used password, moving on...</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">Setting the root password ensures that nobody can log into the MariaDB</span></span><br><span class="line"><span class="string">root user without the proper authorisation.</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">Set root password? [Y/n] y</span></span><br><span class="line"><span class="string">New password: </span></span><br><span class="line"><span class="string">Re-enter new password:</span></span><br></pre></td></tr></table></figure>
+<p>然后完成最后的工作：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">systemctl <span class="built_in">enable</span> mariadb</span><br></pre></td></tr></table></figure>
+<h2 id="安装PHP"><a href="#安装PHP" class="headerlink" title="安装PHP"></a>安装PHP</h2><p>添加PHP7-FPM webtatic仓库：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">rpm -Uvh https://mirror.webtatic.com/yum/el7/webtatic-release.rpm</span><br></pre></td></tr></table></figure>
+<p>安装PHP和PHP-FPM：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">yum -y install php70w-fpm php70w-cli php70w-gd php70w-mcrypt php70w-mysql php70w-pear php70w-xml php70w-mbstring php70w-pdo php70w-json php70w-pecl-apcu php70w-pecl-apcu-devel`</span><br></pre></td></tr></table></figure>
+<p>安装完成后查看PHP的版本</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># php -v</span></span><br><span class="line">PHP 7.0.27 (cli) (built: Jan 14 2018 09:00:22) ( NTS )</span><br><span class="line">Copyright (c) 1997-2017 The PHP Group</span><br><span class="line">Zend Engine v3.0.0, Copyright (c) 1998-2017 Zend Technologies</span><br></pre></td></tr></table></figure>
+<p>然后修改<code>/etc/php.ini</code> 文件，在里面找到 <code>cgi.fix_pathinfo=1</code>，并设置为0</p>
+<p><code>vi /etc/php.ini</code> =&gt; <code>cgi.fix_pathinfo=0</code></p>
+<p>因为php默认为apach部署，故修改php-fpm的配置属性</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">vi /etc/php-fpm.d/www.conf</span><br></pre></td></tr></table></figure>
+<p>将 user 和 group 从 apach 改为 nginx</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">user = nginx</span><br><span class="line">group = nginx</span><br></pre></td></tr></table></figure>
+<p>接着启动服务：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">systemctl start php-fpm</span><br><span class="line">systemctl <span class="built_in">enable</span> php-fpm</span><br></pre></td></tr></table></figure>
+<h2 id="测试"><a href="#测试" class="headerlink" title="测试"></a>测试</h2><p>展示PHP的信息页面，地址：<code>/usr/share/nginx/html/wangchenyitest.local</code></p>
+<p>在nginx中创建对应的conf：</p>
+<p><code>vi /etc/nginx/conf.d/virtual.conf</code></p>
+<p>然后将下面的内容粘贴进去：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">server &#123;</span><br><span class="line">        server_name 111.111.111.111;</span><br><span class="line">        root /usr/share/nginx/html/wangchenyitest.local;</span><br><span class="line"></span><br><span class="line">location / &#123;</span><br><span class="line">        index index.html index.htm index.php;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">location ~ \.php$ &#123;</span><br><span class="line">        include /etc/nginx/fastcgi_params;</span><br><span class="line">        fastcgi_pass 127.0.0.1:9000;</span><br><span class="line">        fastcgi_index index.php;</span><br><span class="line">        fastcgi_param SCRIPT_FILENAME /usr/share/nginx/html/wangchenyitest.local<span class="variable">$fastcgi_script_name</span>;</span><br><span class="line">&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>然后创建</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mkdir /usr/share/nginx/html/wangchenyitest.local</span><br></pre></td></tr></table></figure>
+<p>这个仓库建好后，创建一个index.php</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">vi /usr/share/nginx/html/wangchenyitest.local/index.php</span><br></pre></td></tr></table></figure>
+<p>在里面写这些内容：</p>
+<p><code>&lt;?php phpinfo(); ?&gt;</code></p>
+<p>重启各种服务</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">systemctl restart nginx</span><br><span class="line">systemctl restart php-fpm</span><br><span class="line">systemctl <span class="built_in">enable</span> php-fpm</span><br></pre></td></tr></table></figure>
+<p>接着访问ip，会看到php的界面信息和数据库Mysql的信息。</p>
+<p>安装firewalld服务</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">yum install firewalld</span><br></pre></td></tr></table></figure>
+<p>安装完成后开启防火墙</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">systemctl <span class="built_in">enable</span> firewalld</span><br><span class="line">systemctl start firewalld</span><br></pre></td></tr></table></figure>
+<p>添加http服务</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">firewall-cmd --permanent --add-service=http</span><br><span class="line">firewall-cmd --reload</span><br></pre></td></tr></table></figure>
+<h1 id="安装WordPress"><a href="#安装WordPress" class="headerlink" title="安装WordPress"></a>安装WordPress</h1><p>假设我们的IP、端口和安装路径如下：</p>
+<table>
+<thead>
+<tr>
+<th>1</th>
+<th>2</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>domain</td>
+<td>111.111.111.111</td>
+</tr>
+<tr>
+<td>Port No</td>
+<td>80</td>
+</tr>
+<tr>
+<td>document root</td>
+<td>/usr/share/nginx/wordpress</td>
+</tr>
+<tr>
+<td>logs</td>
+<td>/usr/share/nginx/wordpress/logs</td>
+</tr>
+</tbody>
+</table>
+<p>创建virtual host：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">vi /etc/nginx/conf.d/wordpress.conf</span><br></pre></td></tr></table></figure>
+<p>其中加入以下内容</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line">server &#123;</span><br><span class="line">        listen 80;</span><br><span class="line">        server_name 111.111.111.111;</span><br><span class="line"></span><br><span class="line">        access_log /usr/share/nginx/wordpress/logs/access.log;</span><br><span class="line">        error_log /usr/share/nginx/wordpress/logs/error.log;</span><br><span class="line"></span><br><span class="line">location / &#123;</span><br><span class="line">        root /usr/share/nginx/wordpress;</span><br><span class="line">        index index.php index.html index.htm;</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> (-f <span class="variable">$request_filename</span>) &#123;</span><br><span class="line">        expires 30d;</span><br><span class="line">        <span class="built_in">break</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> (!-e <span class="variable">$request_filename</span>) &#123;</span><br><span class="line">        rewrite ^(.+)$ /index.php?q=<span class="variable">$1</span> last;</span><br><span class="line">        &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">location ~ .php$ &#123;</span><br><span class="line">        fastcgi_pass   localhost:9000;  <span class="comment"># port where FastCGI processes were spawned</span></span><br><span class="line">        fastcgi_index  index.php;</span><br><span class="line">        fastcgi_param  SCRIPT_FILENAME   /usr/share/nginx/wordpress<span class="variable">$fastcgi_script_name</span>;  <span class="comment"># same path as above</span></span><br><span class="line">        fastcgi_param PATH_INFO               <span class="variable">$fastcgi_script_name</span>;</span><br><span class="line">        include /etc/nginx/fastcgi_params;</span><br><span class="line">        &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>其中第三行，第五行，第六行和倒数第四行改为自己设定的值，按照上方的表中自己的设置来修改</p>
+<p>接下来创建文件夹</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">mkdir /usr/share/nginx/wordpress</span><br><span class="line">mkdir /usr/share/nginx/wordpress/logs</span><br></pre></td></tr></table></figure>
+<p>然后检查配置是否正确</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">nginx -t</span><br></pre></td></tr></table></figure>
+<p>如果正确会得到以下内容</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">nginx: the configuration file /etc/nginx/nginx.conf syntax is ok</span><br><span class="line">nginx: configuration file /etc/nginx/nginx.conf <span class="built_in">test</span> is successful</span><br></pre></td></tr></table></figure>
+<p>接着重启服务，并设置setenforce</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">systemctl restart nginx</span><br><span class="line">systemctl restart php-fpm</span><br><span class="line"></span><br><span class="line">setenforce 0</span><br></pre></td></tr></table></figure>
+<h2 id="创建wordpress的数据库"><a href="#创建wordpress的数据库" class="headerlink" title="创建wordpress的数据库"></a>创建wordpress的数据库</h2><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">mysql -u root -p</span><br><span class="line"></span><br><span class="line"># 依次执行以下操作</span><br><span class="line"><span class="keyword">CREATE</span> <span class="keyword">DATABASE</span> wordpress;</span><br><span class="line"><span class="keyword">CREATE</span> <span class="keyword">USER</span> <span class="string">'wpuser'</span>@<span class="string">'localhost'</span> <span class="keyword">IDENTIFIED</span> <span class="keyword">BY</span> <span class="string">'wppassword'</span>;</span><br><span class="line"><span class="keyword">GRANT</span> ALL <span class="keyword">PRIVILEGES</span> <span class="keyword">ON</span> wordpress.* <span class="keyword">TO</span> <span class="string">'wpuser'</span>@<span class="string">'localhost'</span>;</span><br><span class="line">exit</span><br></pre></td></tr></table></figure>
+<h2 id="下载wordpress"><a href="#下载wordpress" class="headerlink" title="下载wordpress"></a>下载wordpress</h2><p>依次执行一下内容</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 安装wget</span></span><br><span class="line">yum -y install wget</span><br><span class="line"></span><br><span class="line"><span class="comment"># 将内容下载到tmp中</span></span><br><span class="line"><span class="built_in">cd</span> /tmp</span><br><span class="line"></span><br><span class="line"><span class="comment"># 下载</span></span><br><span class="line">wget http://wordpress.org/latest.tar.gz</span><br><span class="line"></span><br><span class="line"><span class="comment"># 解压</span></span><br><span class="line">tar -zxvf latest.tar.gz</span><br><span class="line"></span><br><span class="line"><span class="comment"># 移动到指定目录中</span></span><br><span class="line">mv wordpress/* /usr/share/nginx/wordpress</span><br><span class="line"></span><br><span class="line"><span class="comment">#创建指定的wp-config</span></span><br><span class="line">cp /usr/share/nginx/wordpress/wp-config-sample.php /usr/share/nginx/wordpress/wp-config.php</span><br><span class="line"></span><br><span class="line"><span class="comment"># 修改其中的字段</span></span><br><span class="line">vi /usr/share/nginx/wordpress/wp-config.php</span><br></pre></td></tr></table></figure>
+<h2 id="修改wp-config的内容"><a href="#修改wp-config的内容" class="headerlink" title="修改wp-config的内容"></a>修改wp-config的内容</h2><p>原始内容</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">// ** MySQL settings - You can get this info from your web host ** //</span><br><span class="line">/** The name of the database <span class="keyword">for</span> WordPress */</span><br><span class="line">define(<span class="string">'DB_NAME'</span>, <span class="string">'database_name_here'</span>);</span><br><span class="line">/** MySQL database username */</span><br><span class="line">define(<span class="string">'DB_USER'</span>, <span class="string">'username_here'</span>);</span><br><span class="line">/** MySQL database password */</span><br><span class="line">define(<span class="string">'DB_PASSWORD'</span>, <span class="string">'password_here'</span>);</span><br><span class="line">/** MySQL hostname */</span><br><span class="line">define(<span class="string">'DB_HOST'</span>, <span class="string">'localhost'</span>);</span><br></pre></td></tr></table></figure>
+<p>改为：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">// ** MySQL settings - You can get this info from your web host ** //</span><br><span class="line">/** The name of the database <span class="keyword">for</span> WordPress */</span><br><span class="line">define(<span class="string">'DB_NAME'</span>, <span class="string">'wordpress'</span>);</span><br><span class="line">/** MySQL database username */</span><br><span class="line">define(<span class="string">'DB_USER'</span>, <span class="string">'wpuser'</span>);</span><br><span class="line">/** MySQL database password */</span><br><span class="line">define(<span class="string">'DB_PASSWORD'</span>, <span class="string">'wppassword'</span>);</span><br><span class="line">/** MySQL hostname */</span><br><span class="line">define(<span class="string">'DB_HOST'</span>, <span class="string">'localhost'</span>);</span><br></pre></td></tr></table></figure>
+<p>然后将wordpress改为nginx的权限</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">chown -R nginx:nginx /usr/share/nginx/wordpress/</span><br></pre></td></tr></table></figure>
+<p>重启nginx </p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">systemctl restart nginx</span><br></pre></td></tr></table></figure>
+<p>然后访问自己的ip，就可以进入wordpress的安装界面了。</p>
+<h2 id="问题记录：安装时重定向过多"><a href="#问题记录：安装时重定向过多" class="headerlink" title="问题记录：安装时重定向过多"></a>问题记录：安装时重定向过多</h2><p>如果出现界面显示重定向过多，则将<code>http://Your_ip/index.php/wp-admin/install.php</code>中的index.php删掉就可以了</p>
+<h2 id="问题记录：在wp-admin中修改http为https后不能访问wordpress的解决方案"><a href="#问题记录：在wp-admin中修改http为https后不能访问wordpress的解决方案" class="headerlink" title="问题记录：在wp-admin中修改http为https后不能访问wordpress的解决方案"></a>问题记录：在wp-admin中修改http为https后不能访问wordpress的解决方案</h2><p>如果将此http修改为https后，则不能访问wordpress的各种内容。如果要修改，需要进入数据库中修改wp_options的内容。</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">MariaDB [(none)]&gt; use wordpress</span><br><span class="line"></span><br><span class="line">MariaDB [wordpress]&gt; select * from wp_options where option_name = 'home';</span><br><span class="line">+<span class="comment">-----------+-------------+--------------------+----------+</span></span><br><span class="line">| option_id | option_name | option_value       | autoload |</span><br><span class="line">+<span class="comment">-----------+-------------+--------------------+----------+</span></span><br><span class="line">|         2 | home        | https:/<span class="comment">/********** | yes      |</span></span><br><span class="line"><span class="comment">+-----------+-------------+--------------------+----------+</span></span><br><span class="line"><span class="comment">1 row in set (0.00 sec)</span></span><br><span class="line"><span class="comment"></span></span><br><span class="line"><span class="comment"></span></span><br><span class="line"><span class="comment">MariaDB [wordpress]&gt; select * from wp_options where option_name = 'siteurl';</span></span><br><span class="line"><span class="comment">+-----------+-------------+--------------------+----------+</span></span><br><span class="line"><span class="comment">| option_id | option_name | option_value       | autoload |</span></span><br><span class="line"><span class="comment">+-----------+-------------+--------------------+----------+</span></span><br><span class="line"><span class="comment">|         1 | siteurl     | https://********** | yes      |</span></span><br><span class="line"><span class="comment">+-----------+-------------+--------------------+----------+</span></span><br><span class="line"><span class="comment">1 row in set (0.00 sec)</span></span><br></pre></td></tr></table></figure>
+<p>然后使用sql修改https为http就可以了</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">update</span> wp_options <span class="keyword">set</span> option_value=<span class="string">'http://*****'</span> <span class="keyword">where</span> option_name = <span class="string">'siteurl'</span>;</span><br><span class="line"><span class="keyword">update</span> wp_options <span class="keyword">set</span> option_value=<span class="string">'http://*****'</span> <span class="keyword">where</span> option_name = <span class="string">'home'</span>;</span><br></pre></td></tr></table></figure>
+<h1 id="安装NextCloud"><a href="#安装NextCloud" class="headerlink" title="安装NextCloud"></a>安装NextCloud</h1><p>创建session文件夹，并且把<code>/var/lib/php/session</code>的权限改为nginx</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">mkdir -p /var/lib/php/session</span><br><span class="line">chown nginx:nginx -R /var/lib/php/session/</span><br></pre></td></tr></table></figure>
+<p>可以看到原来session文件夹是属于apache的，后改为nginx</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">[root@**** php]<span class="comment"># ls -l</span></span><br><span class="line">total 0</span><br><span class="line">drwxrwx---. 2 root apache 6 Mar  7 13:37 session</span><br><span class="line">[root@**** php]<span class="comment"># chown nginx:nginx -R /var/lib/php/session/</span></span><br><span class="line">[root@**** php]<span class="comment"># ls -l</span></span><br><span class="line">total 0</span><br><span class="line">drwxrwx---. 2 nginx nginx 6 Mar  7 13:37 session</span><br></pre></td></tr></table></figure>
+<h2 id="创建nextcloud的数据库"><a href="#创建nextcloud的数据库" class="headerlink" title="创建nextcloud的数据库"></a>创建nextcloud的数据库</h2><p>使用root用户名和密码进入mysql</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mysql -u root -p</span><br></pre></td></tr></table></figure>
+<p>依次执行以下语句</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">create</span> <span class="keyword">database</span> nextcloud;</span><br><span class="line"><span class="keyword">create</span> <span class="keyword">user</span> nextclouduser@localhost <span class="keyword">identified</span> <span class="keyword">by</span> <span class="string">'nextclouduser@'</span>;</span><br><span class="line"><span class="keyword">grant</span> all <span class="keyword">privileges</span> <span class="keyword">on</span> nextcloud.* <span class="keyword">to</span> nextclouduser@localhost <span class="keyword">identified</span> <span class="keyword">by</span> <span class="string">'nextclouduser@'</span>;</span><br><span class="line"><span class="keyword">flush</span> <span class="keyword">privileges</span>;</span><br><span class="line">exit</span><br></pre></td></tr></table></figure>
+<h2 id="生成自签名-SSL-证书（如果需要用https访问的话）"><a href="#生成自签名-SSL-证书（如果需要用https访问的话）" class="headerlink" title="生成自签名 SSL 证书（如果需要用https访问的话）"></a>生成自签名 SSL 证书（如果需要用https访问的话）</h2><p>运行下列指令</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">mkdir -p /etc/nginx/cert/</span><br><span class="line"></span><br><span class="line">openssl req -new -x509 -days 365 -nodes -out /etc/nginx/cert/nextcloud.crt -keyout /etc/nginx/cert/nextcloud.key</span><br><span class="line"></span><br><span class="line">chmod 700 /etc/nginx/cert</span><br><span class="line"></span><br><span class="line">chmod 600 /etc/nginx/cert/*</span><br></pre></td></tr></table></figure>
+<p>实例：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">[root@cheng php]<span class="comment"># mkdir -p /etc/nginx/cert/</span></span><br><span class="line">[root@cheng php]<span class="comment"># cd /etc/nginx/cert</span></span><br><span class="line">[root@cheng cert]<span class="comment"># ls</span></span><br><span class="line">[root@cheng cert]<span class="comment"># openssl req -new -x509 -days 365 -nodes -out /etc/nginx/cert/nextcloud.crt -keyout /etc/nginx/cert/nextcloud.key</span></span><br><span class="line">Generating a 2048 bit RSA private key</span><br><span class="line">..................................+++</span><br><span class="line">..........+++</span><br><span class="line">writing new private key to <span class="string">'/etc/nginx/cert/nextcloud.key'</span></span><br><span class="line">-----</span><br><span class="line">You are about to be asked to enter information that will be incorporated</span><br><span class="line">into your certificate request.</span><br><span class="line">What you are about to enter is what is called a Distinguished Name or a DN.</span><br><span class="line">There are quite a few fields but you can leave some blank</span><br><span class="line">For some fields there will be a default value,</span><br><span class="line">If you enter <span class="string">'.'</span>, the field will be left blank.</span><br><span class="line">-----</span><br><span class="line">Country Name (2 letter code) [XX]:ch</span><br><span class="line">State or Province Name (full name) []:hb</span><br><span class="line">Locality Name (eg, city) [Default City]:wh</span><br><span class="line">Organization Name (eg, company) [Default Company Ltd]:cc</span><br><span class="line">Organizational Unit Name (eg, section) []:cc</span><br><span class="line">Common Name (eg, your name or your server<span class="string">'s hostname) []:cc</span></span><br><span class="line"><span class="string">Email Address []:cc</span></span><br><span class="line"><span class="string">[root@cheng cert]# ls</span></span><br><span class="line"><span class="string">nextcloud.crt  nextcloud.key</span></span><br><span class="line"><span class="string">[root@cheng cert]# chmod 700 /etc/nginx/cert</span></span><br><span class="line"><span class="string">[root@cheng cert]# chmod 600 /etc/nginx/cert/*</span></span><br></pre></td></tr></table></figure>
+<h2 id="下载Nextcloud"><a href="#下载Nextcloud" class="headerlink" title="下载Nextcloud"></a>下载Nextcloud</h2><p>先安装 wget 和 unzip，如果安装过则可以跳过</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">yum -y install wget unzip</span><br></pre></td></tr></table></figure>
+<p>进入tmp目录，然后下载nextcloud 13.0.1，解压，并把文件夹移动到<code>/usr/share/nginx/html/</code>里面</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">cd</span> /tmp</span><br><span class="line">wget https://download.nextcloud.com/server/releases/nextcloud-13.0.1.zip</span><br><span class="line">unzip nextcloud-13.0.1.zip</span><br><span class="line">mv nextcloud/ /usr/share/nginx/html/</span><br></pre></td></tr></table></figure>
+<p>然后转到Nginx的web根目录，创建data文件夹</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">cd</span> /usr/share/nginx/html/</span><br><span class="line">mkdir -p nextcloud/data</span><br></pre></td></tr></table></figure>
+<p>并且更改nextcloud的目录权限</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">chown nginx:nginx -R nextcloud/</span><br></pre></td></tr></table></figure>
+<h2 id="配置Nextcloud的Nginx"><a href="#配置Nextcloud的Nginx" class="headerlink" title="配置Nextcloud的Nginx"></a>配置Nextcloud的Nginx</h2><p>以下给出三种配置方式，按自己所需要的来配置，我所选择的是第三种。</p>
+<p>注意：如果使用前两种配置方式，则需要在防火墙上加入https：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">firewall-cmd --permanent --add-service=https</span><br><span class="line">firewall-cmd --reload</span><br></pre></td></tr></table></figure>
+<p>（1）通过 <code>https://ip</code>来访问:：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br></pre></td><td class="code"><pre><span class="line">upstream php-handler &#123;</span><br><span class="line">    server 127.0.0.1:9000;</span><br><span class="line">    <span class="comment">#server unix:/var/run/php5-fpm.sock;</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">server &#123;</span><br><span class="line">    listen 80;</span><br><span class="line">    listen [::]:80;</span><br><span class="line">    server_name cloud.example.com; <span class="comment"># 这里需要修改</span></span><br><span class="line">    <span class="comment"># enforce https</span></span><br><span class="line">    <span class="built_in">return</span> 301 https://<span class="variable">$server_name</span><span class="variable">$request_uri</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">server &#123;</span><br><span class="line">    listen 443 ssl http2;</span><br><span class="line">    listen [::]:443 ssl http2;</span><br><span class="line">    server_name cloud.example.com;<span class="comment"># 这里需要修改</span></span><br><span class="line"></span><br><span class="line">	<span class="comment"># 这里ssl需要修改</span></span><br><span class="line">    ssl_certificate /etc/ssl/nginx/cloud.example.com.crt;</span><br><span class="line">    ssl_certificate_key /etc/ssl/nginx/cloud.example.com.key;</span><br><span class="line"></span><br><span class="line">    <span class="comment"># Add headers to serve security related headers</span></span><br><span class="line">    <span class="comment"># Before enabling Strict-Transport-Security headers please read into this</span></span><br><span class="line">    <span class="comment"># topic first.</span></span><br><span class="line">    <span class="comment"># add_header Strict-Transport-Security "max-age=15768000;</span></span><br><span class="line">    <span class="comment"># includeSubDomains; preload;";</span></span><br><span class="line">    <span class="comment">#</span></span><br><span class="line">    <span class="comment"># WARNING: Only add the preload option once you read about</span></span><br><span class="line">    <span class="comment"># the consequences in https://hstspreload.org/. This option</span></span><br><span class="line">    <span class="comment"># will add the domain to a hardcoded list that is shipped</span></span><br><span class="line">    <span class="comment"># in all major browsers and getting removed from this list</span></span><br><span class="line">    <span class="comment"># could take several months.</span></span><br><span class="line">    add_header X-Content-Type-Options nosniff;</span><br><span class="line">    add_header X-XSS-Protection <span class="string">"1; mode=block"</span>;</span><br><span class="line">    add_header X-Robots-Tag none;</span><br><span class="line">    add_header X-Download-Options noopen;</span><br><span class="line">    add_header X-Permitted-Cross-Domain-Policies none;</span><br><span class="line"></span><br><span class="line">    <span class="comment"># Path to the root of your installation</span></span><br><span class="line">    <span class="comment"># 这里也需要修改，改为自己的路径，为 /usr/share/nginx/html/nextcloud/;</span></span><br><span class="line">    root /var/www/nextcloud/;</span><br><span class="line"></span><br><span class="line">    location = /robots.txt &#123;</span><br><span class="line">        allow all;</span><br><span class="line">        log_not_found off;</span><br><span class="line">        access_log off;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment"># The following 2 rules are only needed for the user_webfinger app.</span></span><br><span class="line">    <span class="comment"># Uncomment it if you're planning to use this app.</span></span><br><span class="line">    <span class="comment">#rewrite ^/.well-known/host-meta /public.php?service=host-meta last;</span></span><br><span class="line">    <span class="comment">#rewrite ^/.well-known/host-meta.json /public.php?service=host-meta-json</span></span><br><span class="line">    <span class="comment"># last;</span></span><br><span class="line"></span><br><span class="line">    location = /.well-known/carddav &#123;</span><br><span class="line">      <span class="built_in">return</span> 301 <span class="variable">$scheme</span>://<span class="variable">$host</span>/remote.php/dav;</span><br><span class="line">    &#125;</span><br><span class="line">    location = /.well-known/caldav &#123;</span><br><span class="line">      <span class="built_in">return</span> 301 <span class="variable">$scheme</span>://<span class="variable">$host</span>/remote.php/dav;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment"># set max upload size</span></span><br><span class="line">    client_max_body_size 512M;</span><br><span class="line">    fastcgi_buffers 64 4K;</span><br><span class="line"></span><br><span class="line">    <span class="comment"># Enable gzip but do not remove ETag headers</span></span><br><span class="line">    gzip on;</span><br><span class="line">    gzip_vary on;</span><br><span class="line">    gzip_comp_level 4;</span><br><span class="line">    gzip_min_length 256;</span><br><span class="line">    gzip_proxied expired no-cache no-store private no_last_modified no_etag auth;</span><br><span class="line">    gzip_types application/atom+xml application/javascript application/json application/ld+json application/manifest+json application/rss+xml application/vnd.geo+json application/vnd.ms-fontobject application/x-font-ttf application/x-web-app-manifest+json application/xhtml+xml application/xml font/opentype image/bmp image/svg+xml image/x-icon text/cache-manifest text/css text/plain text/vcard text/vnd.rim.location.xloc text/vtt text/x-component text/x-cross-domain-policy;</span><br><span class="line"></span><br><span class="line">    <span class="comment"># Uncomment if your server is build with the ngx_pagespeed module</span></span><br><span class="line">    <span class="comment"># This module is currently not supported.</span></span><br><span class="line">    <span class="comment">#pagespeed off;</span></span><br><span class="line"></span><br><span class="line">    location / &#123;</span><br><span class="line">        rewrite ^ /index.php<span class="variable">$uri</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    location ~ ^/(?:build|tests|config|lib|3rdparty|templates|data)/ &#123;</span><br><span class="line">        deny all;</span><br><span class="line">    &#125;</span><br><span class="line">    location ~ ^/(?:\.|autotest|occ|issue|indie|db_|console) &#123;</span><br><span class="line">        deny all;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    location ~ ^/(?:index|remote|public|cron|core/ajax/update|status|ocs/v[12]|updater/.+|ocs-provider/.+)\.php(?:$|/) &#123;</span><br><span class="line">        fastcgi_split_path_info ^(.+\.php)(/.*)$;</span><br><span class="line">        include fastcgi_params;</span><br><span class="line">        fastcgi_param SCRIPT_FILENAME <span class="variable">$document_root</span><span class="variable">$fastcgi_script_name</span>;</span><br><span class="line">        fastcgi_param PATH_INFO <span class="variable">$fastcgi_path_info</span>;</span><br><span class="line">        fastcgi_param HTTPS on;</span><br><span class="line">        <span class="comment">#Avoid sending the security headers twice</span></span><br><span class="line">        fastcgi_param modHeadersAvailable <span class="literal">true</span>;</span><br><span class="line">        fastcgi_param front_controller_active <span class="literal">true</span>;</span><br><span class="line">        fastcgi_pass php-handler;</span><br><span class="line">        fastcgi_intercept_errors on;</span><br><span class="line">        fastcgi_request_buffering off;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    location ~ ^/(?:updater|ocs-provider)(?:$|/) &#123;</span><br><span class="line">        try_files <span class="variable">$uri</span>/ =404;</span><br><span class="line">        index index.php;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment"># Adding the cache control header for js and css files</span></span><br><span class="line">    <span class="comment"># Make sure it is BELOW the PHP block</span></span><br><span class="line">    location ~ \.(?:css|js|woff|svg|gif)$ &#123;</span><br><span class="line">        try_files <span class="variable">$uri</span> /index.php<span class="variable">$uri</span><span class="variable">$is_args</span><span class="variable">$args</span>;</span><br><span class="line">        add_header Cache-Control <span class="string">"public, max-age=15778463"</span>;</span><br><span class="line">        <span class="comment"># Add headers to serve security related headers (It is intended to</span></span><br><span class="line">        <span class="comment"># have those duplicated to the ones above)</span></span><br><span class="line">        <span class="comment"># Before enabling Strict-Transport-Security headers please read into</span></span><br><span class="line">        <span class="comment"># this topic first.</span></span><br><span class="line">        <span class="comment"># add_header Strict-Transport-Security "max-age=15768000; includeSubDomains; preload;";</span></span><br><span class="line">        <span class="comment">#</span></span><br><span class="line">        <span class="comment"># WARNING: Only add the preload option once you read about</span></span><br><span class="line">        <span class="comment"># the consequences in https://hstspreload.org/. This option</span></span><br><span class="line">        <span class="comment"># will add the domain to a hardcoded list that is shipped</span></span><br><span class="line">        <span class="comment"># in all major browsers and getting removed from this list</span></span><br><span class="line">        <span class="comment"># could take several months.</span></span><br><span class="line">        add_header X-Content-Type-Options nosniff;</span><br><span class="line">        add_header X-XSS-Protection <span class="string">"1; mode=block"</span>;</span><br><span class="line">        add_header X-Robots-Tag none;</span><br><span class="line">        add_header X-Download-Options noopen;</span><br><span class="line">        add_header X-Permitted-Cross-Domain-Policies none;</span><br><span class="line">        <span class="comment"># Optional: Don't log access to assets</span></span><br><span class="line">        access_log off;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    location ~ \.(?:png|html|ttf|ico|jpg|jpeg)$ &#123;</span><br><span class="line">        try_files <span class="variable">$uri</span> /index.php<span class="variable">$uri</span><span class="variable">$is_args</span><span class="variable">$args</span>;</span><br><span class="line">        <span class="comment"># Optional: Don't log access to other assets</span></span><br><span class="line">        access_log off;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>（2）通过<code>https://ip/nextcloud</code>来访问</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br></pre></td><td class="code"><pre><span class="line">upstream php-handler &#123;</span><br><span class="line">    server 127.0.0.1:9000;</span><br><span class="line">    <span class="comment">#server unix:/var/run/php5-fpm.sock;</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">server &#123;</span><br><span class="line">    listen 80;</span><br><span class="line">    listen [::]:80;</span><br><span class="line">    server_name ip;</span><br><span class="line">    <span class="comment"># enforce https</span></span><br><span class="line">    <span class="built_in">return</span> 301 https://<span class="variable">$server_name</span><span class="variable">$request_uri</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">server &#123;</span><br><span class="line">    listen 443 ssl http2;</span><br><span class="line">    listen [::]:443 ssl http2;</span><br><span class="line">    server_name ip;</span><br><span class="line"></span><br><span class="line">    ssl_certificate /etc/ssl/nginx/cloud.example.com.crt;</span><br><span class="line">    ssl_certificate_key /etc/ssl/nginx/cloud.example.com.key;</span><br><span class="line"></span><br><span class="line">    <span class="comment"># Add headers to serve security related headers</span></span><br><span class="line">    <span class="comment"># Before enabling Strict-Transport-Security headers please read into this</span></span><br><span class="line">    <span class="comment"># topic first.</span></span><br><span class="line">    <span class="comment">#add_header Strict-Transport-Security "max-age=15768000; includeSubDomains; preload;";</span></span><br><span class="line">    add_header X-Content-Type-Options nosniff;</span><br><span class="line">    add_header X-XSS-Protection <span class="string">"1; mode=block"</span>;</span><br><span class="line">    add_header X-Robots-Tag none;</span><br><span class="line">    add_header X-Download-Options noopen;</span><br><span class="line">    add_header X-Permitted-Cross-Domain-Policies none;</span><br><span class="line"></span><br><span class="line">    <span class="comment"># Path to the root of your installation</span></span><br><span class="line">    root /var/www/;</span><br><span class="line"></span><br><span class="line">    location = /robots.txt &#123;</span><br><span class="line">        allow all;</span><br><span class="line">        log_not_found off;</span><br><span class="line">        access_log off;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment"># The following 2 rules are only needed for the user_webfinger app.</span></span><br><span class="line">    <span class="comment"># Uncomment it if you're planning to use this app.</span></span><br><span class="line">    <span class="comment"># rewrite ^/.well-known/host-meta /nextcloud/public.php?service=host-meta</span></span><br><span class="line">    <span class="comment"># last;</span></span><br><span class="line">    <span class="comment">#rewrite ^/.well-known/host-meta.json</span></span><br><span class="line">    <span class="comment"># /nextcloud/public.php?service=host-meta-json last;</span></span><br><span class="line"></span><br><span class="line">    location = /.well-known/carddav &#123;</span><br><span class="line">      <span class="built_in">return</span> 301 <span class="variable">$scheme</span>://<span class="variable">$host</span>/nextcloud/remote.php/dav;</span><br><span class="line">    &#125;</span><br><span class="line">    location = /.well-known/caldav &#123;</span><br><span class="line">      <span class="built_in">return</span> 301 <span class="variable">$scheme</span>://<span class="variable">$host</span>/nextcloud/remote.php/dav;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    location /.well-known/acme-challenge &#123; &#125;</span><br><span class="line"></span><br><span class="line">    location ^~ /nextcloud &#123;</span><br><span class="line"></span><br><span class="line">        <span class="comment"># set max upload size</span></span><br><span class="line">        client_max_body_size 512M;</span><br><span class="line">        fastcgi_buffers 64 4K;</span><br><span class="line"></span><br><span class="line">        <span class="comment"># Enable gzip but do not remove ETag headers</span></span><br><span class="line">        gzip on;</span><br><span class="line">        gzip_vary on;</span><br><span class="line">        gzip_comp_level 4;</span><br><span class="line">        gzip_min_length 256;</span><br><span class="line">        gzip_proxied expired no-cache no-store private no_last_modified no_etag auth;</span><br><span class="line">        gzip_types application/atom+xml application/javascript application/json application/ld+json application/manifest+json application/rss+xml application/vnd.geo+json application/vnd.ms-fontobject application/x-font-ttf application/x-web-app-manifest+json application/xhtml+xml application/xml font/opentype image/bmp image/svg+xml image/x-icon text/cache-manifest text/css text/plain text/vcard text/vnd.rim.location.xloc text/vtt text/x-component text/x-cross-domain-policy;</span><br><span class="line"></span><br><span class="line">        <span class="comment"># Uncomment if your server is build with the ngx_pagespeed module</span></span><br><span class="line">        <span class="comment"># This module is currently not supported.</span></span><br><span class="line">        <span class="comment">#pagespeed off;</span></span><br><span class="line"></span><br><span class="line">        location /nextcloud &#123;</span><br><span class="line">            rewrite ^ /nextcloud/index.php<span class="variable">$uri</span>;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        location ~ ^/nextcloud/(?:build|tests|config|lib|3rdparty|templates|data)/ &#123;</span><br><span class="line">            deny all;</span><br><span class="line">        &#125;</span><br><span class="line">        location ~ ^/nextcloud/(?:\.|autotest|occ|issue|indie|db_|console) &#123;</span><br><span class="line">            deny all;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        location ~ ^/nextcloud/(?:index|remote|public|cron|core/ajax/update|status|ocs/v[12]|updater/.+|ocs-provider/.+)\.php(?:$|/) &#123;</span><br><span class="line">            fastcgi_split_path_info ^(.+\.php)(/.*)$;</span><br><span class="line">            include fastcgi_params;</span><br><span class="line">            fastcgi_param SCRIPT_FILENAME <span class="variable">$document_root</span><span class="variable">$fastcgi_script_name</span>;</span><br><span class="line">            fastcgi_param PATH_INFO <span class="variable">$fastcgi_path_info</span>;</span><br><span class="line">            fastcgi_param HTTPS on;</span><br><span class="line">            <span class="comment">#Avoid sending the security headers twice</span></span><br><span class="line">            fastcgi_param modHeadersAvailable <span class="literal">true</span>;</span><br><span class="line">            fastcgi_param front_controller_active <span class="literal">true</span>;</span><br><span class="line">            fastcgi_pass php-handler;</span><br><span class="line">            fastcgi_intercept_errors on;</span><br><span class="line">            fastcgi_request_buffering off;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        location ~ ^/nextcloud/(?:updater|ocs-provider)(?:$|/) &#123;</span><br><span class="line">            try_files <span class="variable">$uri</span>/ =404;</span><br><span class="line">            index index.php;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment"># Adding the cache control header for js and css files</span></span><br><span class="line">        <span class="comment"># Make sure it is BELOW the PHP block</span></span><br><span class="line">        location ~ \.(?:css|js|woff|svg|gif)$ &#123;</span><br><span class="line">            try_files <span class="variable">$uri</span> /nextcloud/index.php<span class="variable">$uri</span><span class="variable">$is_args</span><span class="variable">$args</span>;</span><br><span class="line">            add_header Cache-Control <span class="string">"public, max-age=15778463"</span>;</span><br><span class="line">            <span class="comment"># Add headers to serve security related headers  (It is intended</span></span><br><span class="line">            <span class="comment"># to have those duplicated to the ones above)</span></span><br><span class="line">            <span class="comment"># Before enabling Strict-Transport-Security headers please read</span></span><br><span class="line">            <span class="comment"># into this topic first.</span></span><br><span class="line">            <span class="comment"># add_header Strict-Transport-Security "max-age=15768000;</span></span><br><span class="line">            <span class="comment"># includeSubDomains; preload;";</span></span><br><span class="line">            add_header X-Content-Type-Options nosniff;</span><br><span class="line">            add_header X-XSS-Protection <span class="string">"1; mode=block"</span>;</span><br><span class="line">            add_header X-Robots-Tag none;</span><br><span class="line">            add_header X-Download-Options noopen;</span><br><span class="line">            add_header X-Permitted-Cross-Domain-Policies none;</span><br><span class="line">            <span class="comment"># Optional: Don't log access to assets</span></span><br><span class="line">            access_log off;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        location ~ \.(?:png|html|ttf|ico|jpg|jpeg)$ &#123;</span><br><span class="line">            try_files <span class="variable">$uri</span> /nextcloud/index.php<span class="variable">$uri</span><span class="variable">$is_args</span><span class="variable">$args</span>;</span><br><span class="line">            <span class="comment"># Optional: Don't log access to other assets</span></span><br><span class="line">            access_log off;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><strong>注意：修改内容同第一条，但是在安装路径方面有所区别，我们nextcloud的安装路径还是<code>/usr/share/nginx/html/nextcloud/</code>，但是如果需要用<code>https://ip/nextcloud</code>来访问nextcloud，则在此配置文件中，root选项不能带上nextcloud，需要使用<code>root /usr/share/nginx/html/;</code>。如果使用<code>root /usr/share/nginx/html/nextcloud/;</code>则会出现<code>file not found</code>的错误。下面第三条配置同理。</strong></p>
+<p>（3）通过<code>http://ip/nextcloud</code>来访问</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br></pre></td><td class="code"><pre><span class="line">upstream php-handler &#123;</span><br><span class="line">    server 127.0.0.1:9000;</span><br><span class="line">    <span class="comment">#server unix:/var/run/php5-fpm.sock;</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">server &#123;</span><br><span class="line">    listen 80;</span><br><span class="line">    listen [::]:80;</span><br><span class="line">    server_name ip;</span><br><span class="line"></span><br><span class="line">    <span class="comment"># Add headers to serve security related headers</span></span><br><span class="line">    <span class="comment"># Before enabling Strict-Transport-Security headers please read into this</span></span><br><span class="line">    <span class="comment"># topic first.</span></span><br><span class="line">    <span class="comment">#add_header Strict-Transport-Security "max-age=15768000; includeSubDomains; preload;";</span></span><br><span class="line">    add_header X-Content-Type-Options nosniff;</span><br><span class="line">    add_header X-XSS-Protection <span class="string">"1; mode=block"</span>;</span><br><span class="line">    add_header X-Robots-Tag none;</span><br><span class="line">    add_header X-Download-Options noopen;</span><br><span class="line">    add_header X-Permitted-Cross-Domain-Policies none;</span><br><span class="line"></span><br><span class="line">    <span class="comment"># Path to the root of your installation</span></span><br><span class="line">    root /var/www/;</span><br><span class="line"></span><br><span class="line">    location = /robots.txt &#123;</span><br><span class="line">        allow all;</span><br><span class="line">        log_not_found off;</span><br><span class="line">        access_log off;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment"># The following 2 rules are only needed for the user_webfinger app.</span></span><br><span class="line">    <span class="comment"># Uncomment it if you're planning to use this app.</span></span><br><span class="line">    <span class="comment"># rewrite ^/.well-known/host-meta /nextcloud/public.php?service=host-meta</span></span><br><span class="line">    <span class="comment"># last;</span></span><br><span class="line">    <span class="comment">#rewrite ^/.well-known/host-meta.json</span></span><br><span class="line">    <span class="comment"># /nextcloud/public.php?service=host-meta-json last;</span></span><br><span class="line"></span><br><span class="line">    location = /.well-known/carddav &#123;</span><br><span class="line">      <span class="built_in">return</span> 301 <span class="variable">$scheme</span>://<span class="variable">$host</span>/nextcloud/remote.php/dav;</span><br><span class="line">    &#125;</span><br><span class="line">    location = /.well-known/caldav &#123;</span><br><span class="line">      <span class="built_in">return</span> 301 <span class="variable">$scheme</span>://<span class="variable">$host</span>/nextcloud/remote.php/dav;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    location /.well-known/acme-challenge &#123; &#125;</span><br><span class="line"></span><br><span class="line">    location ^~ /nextcloud &#123;</span><br><span class="line"></span><br><span class="line">        <span class="comment"># set max upload size</span></span><br><span class="line">        client_max_body_size 512M;</span><br><span class="line">        fastcgi_buffers 64 4K;</span><br><span class="line"></span><br><span class="line">        <span class="comment"># Enable gzip but do not remove ETag headers</span></span><br><span class="line">        gzip on;</span><br><span class="line">        gzip_vary on;</span><br><span class="line">        gzip_comp_level 4;</span><br><span class="line">        gzip_min_length 256;</span><br><span class="line">        gzip_proxied expired no-cache no-store private no_last_modified no_etag auth;</span><br><span class="line">        gzip_types application/atom+xml application/javascript application/json application/ld+json application/manifest+json application/rss+xml application/vnd.geo+json application/vnd.ms-fontobject application/x-font-ttf application/x-web-app-manifest+json application/xhtml+xml application/xml font/opentype image/bmp image/svg+xml image/x-icon text/cache-manifest text/css text/plain text/vcard text/vnd.rim.location.xloc text/vtt text/x-component text/x-cross-domain-policy;</span><br><span class="line"></span><br><span class="line">        <span class="comment"># Uncomment if your server is build with the ngx_pagespeed module</span></span><br><span class="line">        <span class="comment"># This module is currently not supported.</span></span><br><span class="line">        <span class="comment">#pagespeed off;</span></span><br><span class="line"></span><br><span class="line">        location /nextcloud &#123;</span><br><span class="line">            rewrite ^ /nextcloud/index.php<span class="variable">$uri</span>;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        location ~ ^/nextcloud/(?:build|tests|config|lib|3rdparty|templates|data)/ &#123;</span><br><span class="line">            deny all;</span><br><span class="line">        &#125;</span><br><span class="line">        location ~ ^/nextcloud/(?:\.|autotest|occ|issue|indie|db_|console) &#123;</span><br><span class="line">            deny all;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        location ~ ^/nextcloud/(?:index|remote|public|cron|core/ajax/update|status|ocs/v[12]|updater/.+|ocs-provider/.+)\.php(?:$|/) &#123;</span><br><span class="line">            fastcgi_split_path_info ^(.+\.php)(/.*)$;</span><br><span class="line">            include fastcgi_params;</span><br><span class="line">            fastcgi_param SCRIPT_FILENAME <span class="variable">$document_root</span><span class="variable">$fastcgi_script_name</span>;</span><br><span class="line">            fastcgi_param PATH_INFO <span class="variable">$fastcgi_path_info</span>;</span><br><span class="line">            fastcgi_param HTTPS on;</span><br><span class="line">            <span class="comment">#Avoid sending the security headers twice</span></span><br><span class="line">            fastcgi_param modHeadersAvailable <span class="literal">true</span>;</span><br><span class="line">            fastcgi_param front_controller_active <span class="literal">true</span>;</span><br><span class="line">            fastcgi_pass php-handler;</span><br><span class="line">            fastcgi_intercept_errors on;</span><br><span class="line">            fastcgi_request_buffering off;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        location ~ ^/nextcloud/(?:updater|ocs-provider)(?:$|/) &#123;</span><br><span class="line">            try_files <span class="variable">$uri</span>/ =404;</span><br><span class="line">            index index.php;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment"># Adding the cache control header for js and css files</span></span><br><span class="line">        <span class="comment"># Make sure it is BELOW the PHP block</span></span><br><span class="line">        location ~ \.(?:css|js|woff|svg|gif)$ &#123;</span><br><span class="line">            try_files <span class="variable">$uri</span> /nextcloud/index.php<span class="variable">$uri</span><span class="variable">$is_args</span><span class="variable">$args</span>;</span><br><span class="line">            add_header Cache-Control <span class="string">"public, max-age=15778463"</span>;</span><br><span class="line">            <span class="comment"># Add headers to serve security related headers  (It is intended</span></span><br><span class="line">            <span class="comment"># to have those duplicated to the ones above)</span></span><br><span class="line">            <span class="comment"># Before enabling Strict-Transport-Security headers please read</span></span><br><span class="line">            <span class="comment"># into this topic first.</span></span><br><span class="line">            <span class="comment"># add_header Strict-Transport-Security "max-age=15768000;</span></span><br><span class="line">            <span class="comment"># includeSubDomains; preload;";</span></span><br><span class="line">            add_header X-Content-Type-Options nosniff;</span><br><span class="line">            add_header X-XSS-Protection <span class="string">"1; mode=block"</span>;</span><br><span class="line">            add_header X-Robots-Tag none;</span><br><span class="line">            add_header X-Download-Options noopen;</span><br><span class="line">            add_header X-Permitted-Cross-Domain-Policies none;</span><br><span class="line">            <span class="comment"># Optional: Don't log access to assets</span></span><br><span class="line">            access_log off;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        location ~ \.(?:png|html|ttf|ico|jpg|jpeg)$ &#123;</span><br><span class="line">            try_files <span class="variable">$uri</span> /nextcloud/index.php<span class="variable">$uri</span><span class="variable">$is_args</span><span class="variable">$args</span>;</span><br><span class="line">            <span class="comment"># Optional: Don't log access to other assets</span></span><br><span class="line">            access_log off;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><strong>注意：此条配置删除了关于ssl的配置和转发到https的内容，其他修改内容和注意事项同第一条和第二条。</strong></p>
+<h2 id="为-Nextcloud-配置-SELinux-和-FirewallD-规则"><a href="#为-Nextcloud-配置-SELinux-和-FirewallD-规则" class="headerlink" title="为 Nextcloud 配置 SELinux 和 FirewallD 规则"></a>为 Nextcloud 配置 SELinux 和 FirewallD 规则</h2><p>以强制内容运行SELinux：先安装SELinux管理工具</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">yum -y install policycoreutils-python</span><br></pre></td></tr></table></figure>
+<p>然后运行一下命令，如果nextcloud的安装目录与下面不一样，则所需要做修改</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">semanage fcontext -a -t httpd_sys_rw_content_t <span class="string">'/usr/share/nginx/html/nextcloud/data(/.*)?'</span></span><br><span class="line">semanage fcontext -a -t httpd_sys_rw_content_t <span class="string">'/usr/share/nginx/html/nextcloud/config(/.*)?'</span></span><br><span class="line">semanage fcontext -a -t httpd_sys_rw_content_t <span class="string">'/usr/share/nginx/html/nextcloud/apps(/.*)?'</span></span><br><span class="line">semanage fcontext -a -t httpd_sys_rw_content_t <span class="string">'/usr/share/nginx/html/nextcloud/assets(/.*)?'</span></span><br><span class="line">semanage fcontext -a -t httpd_sys_rw_content_t <span class="string">'/usr/share/nginx/html/nextcloud/.htaccess'</span></span><br><span class="line">semanage fcontext -a -t httpd_sys_rw_content_t <span class="string">'/usr/share/nginx/html/nextcloud/.user.ini'</span></span><br><span class="line"></span><br><span class="line">restorecon -Rv <span class="string">'/usr/share/nginx/html/nextcloud/'</span></span><br></pre></td></tr></table></figure>
+<h2 id="在浏览器中安装Nextcloud"><a href="#在浏览器中安装Nextcloud" class="headerlink" title="在浏览器中安装Nextcloud"></a>在浏览器中安装Nextcloud</h2><p>按照nextcloud的nginx配置，在浏览器中输入对应的地址。然后选择mysql，将nextcloud数据库的用户名和密码填写好安装就可以了。</p>
+<h1 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h1><ul>
+<li><a href="https://docs.nextcloud.com/" target="_blank" rel="noopener">https://docs.nextcloud.com/</a></li>
+<li><a href="https://www.howtoforge.com/tutorial/how-to-install-nextcloud-with-nginx-and-php-fpm-on-centos-7/" target="_blank" rel="noopener">https://www.howtoforge.com/tutorial/how-to-install-nextcloud-with-nginx-and-php-fpm-on-centos-7/</a></li>
+<li><a href="https://www.itzgeek.com/web/wordpress/install-wordpress-with-nginx-1-6-on-centos-7-rhel-7.html" target="_blank" rel="noopener">https://www.itzgeek.com/web/wordpress/install-wordpress-with-nginx-1-6-on-centos-7-rhel-7.html</a></li>
+</ul>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+      <div>
+        <ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者：</strong>
+    王晨懿
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="http://yoursite.com/2018/03/30/2018-03-30-CentOS7-通过SSH安装wordpress和nextcloud详细过程（CentOS+Nginx+MySQL+PHP7）/" title="CentOS7 通过SSH安装wordpress和nextcloud详细过程（CentOS+Nginx+MySQL+PHP7）">http://yoursite.com/2018/03/30/2018-03-30-CentOS7-通过SSH安装wordpress和nextcloud详细过程（CentOS+Nginx+MySQL+PHP7）/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>
+    本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/3.0/" rel="external nofollow" target="_blank">CC BY-NC-SA 3.0</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+
+      </div>
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/centos/" rel="tag"><i class="fa fa-tag"></i> centos</a>
+          
+            <a href="/tags/wordpress/" rel="tag"><i class="fa fa-tag"></i> wordpress</a>
+          
+            <a href="/tags/nextcloud/" rel="tag"><i class="fa fa-tag"></i> nextcloud</a>
+          
+            <a href="/tags/nginx/" rel="tag"><i class="fa fa-tag"></i> nginx</a>
+          
+            <a href="/tags/mysql/" rel="tag"><i class="fa fa-tag"></i> mysql</a>
+          
+            <a href="/tags/php/" rel="tag"><i class="fa fa-tag"></i> php</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/12/08/2017-12-9-MacOS-Python2与Python3-安装-OpenCV3/" rel="next" title="MacOS Python2与Python3 安装 OpenCV3">
+                <i class="fa fa-chevron-left"></i> MacOS Python2与Python3 安装 OpenCV3
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/03/31/2018-03-31-Typora Mac应用程序不响应解决方法/" rel="prev" title="Typora Mac应用程序不响应解决方法">
+                Typora Mac应用程序不响应解决方法 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/p1.png"
+                alt="wang" />
+            
+              <p class="site-author-name" itemprop="name">wang</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">15</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">7</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">36</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#CentOS7-安装Nginx、PHP、MySQL"><span class="nav-number">1.</span> <span class="nav-text">CentOS7 安装Nginx、PHP、MySQL</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#CentOS版本："><span class="nav-number">1.1.</span> <span class="nav-text">CentOS版本：</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#安装-nginx"><span class="nav-number">1.2.</span> <span class="nav-text">安装 nginx</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#添加EPEL仓库："><span class="nav-number">1.2.1.</span> <span class="nav-text">添加EPEL仓库：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#使用yum安装nginx"><span class="nav-number">1.2.2.</span> <span class="nav-text">使用yum安装nginx</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#安装MySQL（MariaDB）"><span class="nav-number">1.3.</span> <span class="nav-text">安装MySQL（MariaDB）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#安装PHP"><span class="nav-number">1.4.</span> <span class="nav-text">安装PHP</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#测试"><span class="nav-number">1.5.</span> <span class="nav-text">测试</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#安装WordPress"><span class="nav-number">2.</span> <span class="nav-text">安装WordPress</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#创建wordpress的数据库"><span class="nav-number">2.1.</span> <span class="nav-text">创建wordpress的数据库</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#下载wordpress"><span class="nav-number">2.2.</span> <span class="nav-text">下载wordpress</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#修改wp-config的内容"><span class="nav-number">2.3.</span> <span class="nav-text">修改wp-config的内容</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#问题记录：安装时重定向过多"><span class="nav-number">2.4.</span> <span class="nav-text">问题记录：安装时重定向过多</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#问题记录：在wp-admin中修改http为https后不能访问wordpress的解决方案"><span class="nav-number">2.5.</span> <span class="nav-text">问题记录：在wp-admin中修改http为https后不能访问wordpress的解决方案</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#安装NextCloud"><span class="nav-number">3.</span> <span class="nav-text">安装NextCloud</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#创建nextcloud的数据库"><span class="nav-number">3.1.</span> <span class="nav-text">创建nextcloud的数据库</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#生成自签名-SSL-证书（如果需要用https访问的话）"><span class="nav-number">3.2.</span> <span class="nav-text">生成自签名 SSL 证书（如果需要用https访问的话）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#下载Nextcloud"><span class="nav-number">3.3.</span> <span class="nav-text">下载Nextcloud</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#配置Nextcloud的Nginx"><span class="nav-number">3.4.</span> <span class="nav-text">配置Nextcloud的Nginx</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#为-Nextcloud-配置-SELinux-和-FirewallD-规则"><span class="nav-number">3.5.</span> <span class="nav-text">为 Nextcloud 配置 SELinux 和 FirewallD 规则</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#在浏览器中安装Nextcloud"><span class="nav-number">3.6.</span> <span class="nav-text">在浏览器中安装Nextcloud</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#参考"><span class="nav-number">4.</span> <span class="nav-text">参考</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+        <div class="back-to-top">
+          <i class="fa fa-arrow-up"></i>
+          
+            <span id="scrollpercent"><span>0</span>%</span>
+          
+        </div>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">wang</span>
+
+  
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-area-chart"></i>
+    </span>
+    
+      <span class="post-meta-item-text">Site words total count&#58;</span>
+    
+    <span title="Site words total count">22.5k</span>
+  
+</div>
+
+
+<!--
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+-->
+
+
+
+<!--
+  <span class="post-meta-divider">|</span>
+-->
+
+
+
+<!--
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Gemini</a> v5.1.4</div>
+-->
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+  
+  
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/three/three.min.js"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/three/three-waves.min.js"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
