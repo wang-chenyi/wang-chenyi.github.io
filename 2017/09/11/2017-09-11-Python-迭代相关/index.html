@@ -86,18 +86,18 @@
 
 
 
-<meta name="description" content="Python 迭代相关内容容器（container）容器是一种把多个元素组织在一起的数据结构，容器中的元素可以逐个地迭代获取，可以用in, not in关键字判断元素是否包含在容器中。通常这类数据结构把所有的元素存储在内存中（也有一些特例，并不是所有的元素都放在内存，比如迭代器和生成器对象）。在Python中，常见的容器对象有：  list, deque … set, frozensets … d">
+<meta name="description" content="Python 迭代(一)容器（container）容器是一种把多个元素组织在一起的数据结构，容器中的元素可以逐个地迭代获取，可以用in, not in关键字判断元素是否包含在容器中。通常这类数据结构把所有的元素存储在内存中（也有一些特例，并不是所有的元素都放在内存，比如迭代器和生成器对象）。在Python中，常见的容器对象有：  list, deque … set, frozensets … di">
 <meta name="keywords" content="Python,迭代器,可迭代对象,生成器">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Python 迭代">
-<meta property="og:url" content="http://yoursite.com/2017/09/11/2017-09-11-Python-迭代相关/index.html">
+<meta property="og:url" content="https://wang-chenyi.github.io/2017/09/11/2017-09-11-Python-迭代相关/index.html">
 <meta property="og:site_name" content="摸鱼摸到大鲨鱼">
-<meta property="og:description" content="Python 迭代相关内容容器（container）容器是一种把多个元素组织在一起的数据结构，容器中的元素可以逐个地迭代获取，可以用in, not in关键字判断元素是否包含在容器中。通常这类数据结构把所有的元素存储在内存中（也有一些特例，并不是所有的元素都放在内存，比如迭代器和生成器对象）。在Python中，常见的容器对象有：  list, deque … set, frozensets … d">
+<meta property="og:description" content="Python 迭代(一)容器（container）容器是一种把多个元素组织在一起的数据结构，容器中的元素可以逐个地迭代获取，可以用in, not in关键字判断元素是否包含在容器中。通常这类数据结构把所有的元素存储在内存中（也有一些特例，并不是所有的元素都放在内存，比如迭代器和生成器对象）。在Python中，常见的容器对象有：  list, deque … set, frozensets … di">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2018-04-13T11:06:00.000Z">
+<meta property="og:updated_time" content="2019-04-04T06:44:14.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Python 迭代">
-<meta name="twitter:description" content="Python 迭代相关内容容器（container）容器是一种把多个元素组织在一起的数据结构，容器中的元素可以逐个地迭代获取，可以用in, not in关键字判断元素是否包含在容器中。通常这类数据结构把所有的元素存储在内存中（也有一些特例，并不是所有的元素都放在内存，比如迭代器和生成器对象）。在Python中，常见的容器对象有：  list, deque … set, frozensets … d">
+<meta name="twitter:description" content="Python 迭代(一)容器（container）容器是一种把多个元素组织在一起的数据结构，容器中的元素可以逐个地迭代获取，可以用in, not in关键字判断元素是否包含在容器中。通常这类数据结构把所有的元素存储在内存中（也有一些特例，并不是所有的元素都放在内存，比如迭代器和生成器对象）。在Python中，常见的容器对象有：  list, deque … set, frozensets … di">
 
 
 
@@ -127,7 +127,7 @@
 
 
 
-  <link rel="canonical" href="http://yoursite.com/2017/09/11/2017-09-11-Python-迭代相关/"/>
+  <link rel="canonical" href="https://wang-chenyi.github.io/2017/09/11/2017-09-11-Python-迭代相关/"/>
 
 
 
@@ -294,7 +294,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/09/11/2017-09-11-Python-迭代相关/">
+    <link itemprop="mainEntityOfPage" href="https://wang-chenyi.github.io/2017/09/11/2017-09-11-Python-迭代相关/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="wang">
@@ -377,7 +377,7 @@
                   <span class="post-meta-item-text">字数统计&#58;</span>
                 
                 <span title="字数统计">
-                  2,034
+                  2,031
                 </span>
               
 
@@ -414,7 +414,7 @@
       
 
       
-        <h1 id="Python-迭代相关内容"><a href="#Python-迭代相关内容" class="headerlink" title="Python 迭代相关内容"></a>Python 迭代相关内容</h1><h2 id="容器（container）"><a href="#容器（container）" class="headerlink" title="容器（container）"></a>容器（container）</h2><p>容器是一种把多个元素组织在一起的数据结构，容器中的元素可以逐个地迭代获取，可以用<code>in</code>, <code>not in</code>关键字判断元素是否包含在容器中。通常这类数据结构把所有的元素存储在内存中（也有一些特例，并不是所有的元素都放在内存，比如迭代器和生成器对象）。在Python中，常见的容器对象有：</p>
+        <h1 id="Python-迭代-一"><a href="#Python-迭代-一" class="headerlink" title="Python 迭代(一)"></a>Python 迭代(一)</h1><h2 id="容器（container）"><a href="#容器（container）" class="headerlink" title="容器（container）"></a>容器（container）</h2><p>容器是一种把多个元素组织在一起的数据结构，容器中的元素可以逐个地迭代获取，可以用<code>in</code>, <code>not in</code>关键字判断元素是否包含在容器中。通常这类数据结构把所有的元素存储在内存中（也有一些特例，并不是所有的元素都放在内存，比如迭代器和生成器对象）。在Python中，常见的容器对象有：</p>
 <ul>
 <li>list, deque …</li>
 <li>set, frozensets …</li>
@@ -493,7 +493,7 @@
   </li>
   <li class="post-copyright-link">
     <strong>本文链接：</strong>
-    <a href="http://yoursite.com/2017/09/11/2017-09-11-Python-迭代相关/" title="Python 迭代">http://yoursite.com/2017/09/11/2017-09-11-Python-迭代相关/</a>
+    <a href="https://wang-chenyi.github.io/2017/09/11/2017-09-11-Python-迭代相关/" title="Python 迭代">https://wang-chenyi.github.io/2017/09/11/2017-09-11-Python-迭代相关/</a>
   </li>
   <li class="post-copyright-license">
     <strong>版权声明： </strong>
@@ -620,7 +620,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">16</span>
+                  <span class="site-state-item-count">17</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -675,7 +675,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Python-迭代相关内容"><span class="nav-number">1.</span> <span class="nav-text">Python 迭代相关内容</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#容器（container）"><span class="nav-number">1.1.</span> <span class="nav-text">容器（container）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#可迭代对象（iterable）"><span class="nav-number">1.2.</span> <span class="nav-text">可迭代对象（iterable）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#迭代器（iterator"><span class="nav-number">1.3.</span> <span class="nav-text">迭代器（iterator)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#生成器表达式"><span class="nav-number">1.4.</span> <span class="nav-text">生成器表达式</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#itertools模块"><span class="nav-number">1.4.1.</span> <span class="nav-text">itertools模块</span></a></li></ol></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Python-迭代-一"><span class="nav-number">1.</span> <span class="nav-text">Python 迭代(一)</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#容器（container）"><span class="nav-number">1.1.</span> <span class="nav-text">容器（container）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#可迭代对象（iterable）"><span class="nav-number">1.2.</span> <span class="nav-text">可迭代对象（iterable）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#迭代器（iterator"><span class="nav-number">1.3.</span> <span class="nav-text">迭代器（iterator)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#生成器表达式"><span class="nav-number">1.4.</span> <span class="nav-text">生成器表达式</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#itertools模块"><span class="nav-number">1.4.1.</span> <span class="nav-text">itertools模块</span></a></li></ol></li></ol></li></ol></div>
             
 
           </div>
@@ -702,7 +702,7 @@
 
     <footer id="footer" class="footer">
       <div class="footer-inner">
-        <div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
   <span class="with-love">
     <i class="fa fa-heart"></i>
   </span>
@@ -716,7 +716,7 @@
     
       <span class="post-meta-item-text">Site words total count&#58;</span>
     
-    <span title="Site words total count">23.4k</span>
+    <span title="Site words total count">24.0k</span>
   
 </div>
 
@@ -779,9 +779,6 @@
 
 
 
-  
-  
-
 
 
 
@@ -818,16 +815,6 @@
   
   
     <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
-  
-
-  
-  
-    <script type="text/javascript" src="/lib/three/three.min.js"></script>
-  
-
-  
-  
-    <script type="text/javascript" src="/lib/three/three-waves.min.js"></script>
   
 
 
