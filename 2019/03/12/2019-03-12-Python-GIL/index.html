@@ -1,0 +1,1239 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+  
+  
+    
+    
+  <script src="/lib/pace/pace.min.js?v=1.0.2"></script>
+  <link href="/lib/pace/pace-theme-bounce.min.css?v=1.0.2" rel="stylesheet">
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Python,线程," />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="Python GIL(Gloabal Interpreter Lock)为了支持多线程机制，一个基本的需求就是需要实现不同线程对共享资源访问的互斥。这正是Python引用GIL的根源。GIL是一个解释器，在一个线程拥有了解释器的访问权后，其他的所有线程都必须等待它释放解释器的访问权。Python的多线程是在GIL的基础上实现的。意味着无论如何，在同一时间，只有一个线程可以访问Python所提供的A">
+<meta name="keywords" content="Python,线程">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Python GIL">
+<meta property="og:url" content="https://wang-chenyi.github.io/2019/03/12/2019-03-12-Python-GIL/index.html">
+<meta property="og:site_name" content="摸鱼摸到大鲨鱼">
+<meta property="og:description" content="Python GIL(Gloabal Interpreter Lock)为了支持多线程机制，一个基本的需求就是需要实现不同线程对共享资源访问的互斥。这正是Python引用GIL的根源。GIL是一个解释器，在一个线程拥有了解释器的访问权后，其他的所有线程都必须等待它释放解释器的访问权。Python的多线程是在GIL的基础上实现的。意味着无论如何，在同一时间，只有一个线程可以访问Python所提供的A">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2019-07-16T11:49:04.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Python GIL">
+<meta name="twitter:description" content="Python GIL(Gloabal Interpreter Lock)为了支持多线程机制，一个基本的需求就是需要实现不同线程对共享资源访问的互斥。这正是Python引用GIL的根源。GIL是一个解释器，在一个线程拥有了解释器的访问权后，其他的所有线程都必须等待它释放解释器的访问权。Python的多线程是在GIL的基础上实现的。意味着无论如何，在同一时间，只有一个线程可以访问Python所提供的A">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":true,"scrollpercent":true,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="https://wang-chenyi.github.io/2019/03/12/2019-03-12-Python-GIL/"/>
+
+
+
+
+
+  <title>Python GIL | 摸鱼摸到大鲨鱼</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">摸鱼摸到大鲨鱼</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">Oh, Suger. You don't have to be so sweet.</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-history"></i> <br />
+            
+            时间轴
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off"
+             placeholder="搜索..." spellcheck="false"
+             type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://wang-chenyi.github.io/2019/03/12/2019-03-12-Python-GIL/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="wang">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/p1.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="摸鱼摸到大鲨鱼">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Python GIL</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-03-12T00:00:00+08:00">
+                2019-03-12
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Python/" itemprop="url" rel="index">
+                    <span itemprop="name">Python</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">字数统计&#58;</span>
+                
+                <span title="字数统计">
+                  2,919
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
+                
+                <span title="阅读时长">
+                  11
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="Python-GIL-Gloabal-Interpreter-Lock"><a href="#Python-GIL-Gloabal-Interpreter-Lock" class="headerlink" title="Python GIL(Gloabal Interpreter Lock)"></a>Python GIL(Gloabal Interpreter Lock)</h1><p>为了支持多线程机制，一个基本的需求就是需要实现不同线程对共享资源访问的互斥。这正是Python引用GIL的根源。GIL是一个解释器，在一个线程拥有了解释器的访问权后，其他的所有线程都必须等待它释放解释器的访问权。Python的多线程是在GIL的基础上实现的。意味着无论如何，在同一时间，只有一个线程可以访问Python所提供的API，在单核处理器上，GIL的保护粒度很大，若是保护粒度过小，就会出现频繁的加锁、解锁操作，但是加锁解锁对于操作系统来说是比较重量级的操作，性能反而不如保护粒度大的GIL。另一方面，GIL的存在限制了多核处理器，导致多核处理器退化为单核处理器。所以Python并不能发挥多核处理器的作用。</p>
+<p>对于Python而言，字节码解释器是Python的核心所在，所以Python通过GIL来互斥不同线程对解释器的使用。当某个线程（A）获得GIL之后，其他线程必须等待A释放GIL后，才能进入解释器。</p>
+<p>对于线程调度机制，最关键的是要解决两个问题：</p>
+<p>1、在何时挂起当前线程，选择处于等待状态的下一个线程</p>
+<p>2、在众多处于等待状态的候选线程中，选择激活哪一个线程</p>
+<p>对于问题1，Python内部的时钟N规定了Python在执行了N条指令以后应该立即启动线程调度机制。在设置中，这个值为100.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;&gt;&gt; </span><span class="keyword">import</span> sys</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>sys.getcheckinterval()</span><br><span class="line"><span class="number">100</span></span><br></pre></td></tr></table></figure>
+<p>当一个线程获得了访问Python解释器所必须的GIL并进入解释器后，Python内部的监测机制就开始启动，当这个线程执行了100条指令后，Python解释器将强行挂起当前线程，开始切换到下一个处于等待状态的进程</p>
+<p>对于问题2，选择激活哪一个线程Python并没有做干涉，而是借用了底层操作系统所提供的线程调度机制来决定下一个进入Python解释器的线程。也就是意味着Python的线程就是操作系统所支持的原生线程，对于不同的操作系统，有着不同的实现。但是Python提供了一套统一的抽象机制，这就是Python中的 thread 以及threading。</p>
+<h2 id="创建线程"><a href="#创建线程" class="headerlink" title="创建线程"></a>创建线程</h2><h3 id="初始化环境"><a href="#初始化环境" class="headerlink" title="初始化环境"></a>初始化环境</h3><p>Python在启动时，并不支持多线程，只有在调用到 _thread.start_new_thread时（Python3中为 _thread），会明确指示Python虚拟机创建新线程，Python虚拟机就会自动建立多线程机制所需要的数据结构、环境和GIL。</p>
+<p>GIL的真面目为<code>void*</code>。创建工作由<code>PyThread_alloc_lock</code>完成，线程通过<code>PyThread_acquire_lock</code>尝试获取GIL。</p>
+<p><code>PyThread_acquire_lock</code>有两种工作方式，通过参数 waitflag 来区分。waitflag指示当GIL当前不可获得时，是否进行等待，更直接的说，就是当前线程是否通过WaitForSingleObject将自身挂起，直到别的线程释放GIL，然后由操作系统将自己唤醒</p>
+<p>如果 waitflag 为0，Python就会检查当前GIL是否可用。其中指示GIL是否可用的变量为owned，owned初始化为 -1，意味着GIL可用。当线程要使用GIL时，必须将其设置为0，当owned设置为0后，代表当前GIL已经被一个线程所占用。当有一个线程在等待GIL时，owned的值加1。当一个线程释放GIL时，一定会将owned的值减1。当所有线程都释放GIL后，owned会再次变为-1，意味着GIL再次变为可用。</p>
+<h3 id="创建线程-1"><a href="#创建线程-1" class="headerlink" title="创建线程"></a>创建线程</h3><p>主线程使用<code>PyThread_start_new_thread</code>来创建子线程。主线程通过调用操作系统来成功创建出原生线程，当成功创建并返回后，主线程开始将自己挂起，开始进入子线程（在这里子进程还没有开始申请GIL），执行bootstrap函数，在bootstrap中，子进程完成三个动作，获取线程ID，通知obj.done，调用t_bootstrap，其中，子线程通过obj.done唤醒主线程。为什么Python需要让主线程等待子线程的通知呢？是因为<code>PyThread_start_new_thread</code>需要返回子线程的id，子线程只有子线程被激活后才可以在子线程中获取。所以主线程等待的就是子线程的ID，当子线程中设置了obj.id，就会设法唤醒主线程。</p>
+<p>Python通过<code>PyThread_start_new_thread</code>来完成创建子线程的操作。在通过操作系统创建出子进程后，主线程会将自己挂起，进入子进程（这时子进程并没有获得GIL），等待子进程中控制的obj.done。子线程的过程是bootstrap，在bootstrap中，子进程完成了三个动作：获取线程ID、通知obj.done、调用t_bootstrap。那么Python为何要让主线程等待子线程的通知呢？这时因为<code>PyThread_start_new_thread</code>需要返回所创建子线程的ID，而这个ID只有在子线程被激活后才能在子线程中获取。因此主线程等待的就是这个ID，一旦子线程设置了obj.id，就会设法唤醒主线程。</p>
+<p>当主线程返回子线程ID后，就会继续执行后面的字节码，这时，主线程拥有GIL，子线程则进入t_bootstrap，并最终进入等待GIL的状态。开始了与主线程对GIL的竞争。在t_bootstrap中，第一个进行的动作就是<code>PyEval_AcquireThread</code>来申请GIL，当<code>PyEval_AcquireThread</code>结束后，子线程就获得了GIL，开始执行后面的内容。</p>
+<h3 id="线程状态保护机制"><a href="#线程状态保护机制" class="headerlink" title="线程状态保护机制"></a>线程状态保护机制</h3><p>这里的线程状态就等同于进程的上下文，在进行线程切换时，每一个线程都需要获得自己线程的相关信息。Python内部，维护着一个全局变量：<code>PyThreadState* _PyThread_State_Current</code>。当前活动的线程所对应的线程状态对象就保存在这个变量里。当Python进行线程调度时，会被激活的线程状态就会被保存在这个变量里。</p>
+<p><strong>Python在进行线程调度时，如何获得被激活线程的状态</strong></p>
+<p>Python内部会有一个单项链表来管理所有的Python线程状态对象。需要寻找一个线程对应的状态对象时，就遍历这个链表。对于状态对象链表的访问，不必在GIL的保护下进行。因为Python会创建一个独立的锁，专门对状态链表进行保护。这个锁的创建是在Python进行初始化的时候创建的。链表中Node的数据结构为：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">key</span> &#123;</span></span><br><span class="line">	<span class="class"><span class="keyword">struct</span> <span class="title">key</span> *<span class="title">next</span>;</span></span><br><span class="line">	<span class="keyword">long</span> id;</span><br><span class="line">	<span class="keyword">int</span> key;</span><br><span class="line">	<span class="keyword">void</span> *value;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p>id存放着线程的id，value指向<code>PyThreadState</code>。</p>
+<p>子线程在创建了自身的线程状态对象后，会通过<code>_PyGILState_NoteThreadState</code>（该函数在<code>PyThreadState_New</code>中）将这个对象放入状态对象链表中。但是当前线程不一定获得了GIL，子线程到现在还没有申请GIL，自然不会将自己挂起，所以操作系统可能在主进程和子进程之间进行切换。但是，<strong>Python级的线程调度和操作系统级别的线程调度是不同的</strong>，Python级别的线程调度意味着GIL所有权的易手，但操作系统并不是。当所有的线程都完成了初始化动作后，操作系统的线程调度才会和Python的线程调度一致。那时，Python的线程调度会迫使当前进程释放GIL，这一操作会触发GIL中维护的Event(Windows)内核对象，这个触发又进而触发操作系统的线程调度。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">void</span> <span class="title">t_bootstrap</span><span class="params">(<span class="keyword">void</span> *boot_raw)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    ...</span><br><span class="line">    PyThreadState *tstate;</span><br><span class="line">    PyObject *res;</span><br><span class="line">    ...</span><br><span class="line">    </span><br><span class="line">    tstate = PyThreadState_New(boot_interep);</span><br><span class="line">    PyEval_AcquireThread(tstate);</span><br><span class="line">    res = PyEval_CallObjectWithKeywords(...)</span><br><span class="line">    ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>完成<code>PyThreadState_New</code>后，就到了<code>PyEval_AcquireThread</code>，到了这一步，子线程开始争取GIL，到了这一步，子线程将自己挂起，操作系统的线程调度机制不能靠自己将其唤醒，只有等待Python的线程调度机制强迫主线程放弃GIL后，子线程才会被唤醒。</p>
+<p>当子线程被Python线程调度机制唤醒后，第一件事就是通过<code>PyThreadState_Swap</code>将Python维护的当前线程状态设置为自身的状态对象。然后进入<code>PyEval_CallObjectWithKeywords</code>，从这里一直往前，最终调用<code>PyEval_EvalFrameEx</code>，进入解释器。</p>
+<p><code>PyThread_start_new_thread</code>执行顺序：</p>
+<ul>
+<li>PyThread_start_new_therad<ul>
+<li>bootstrap<ul>
+<li>t_bootstrap<ul>
+<li>PyThreadState_New<ul>
+<li>_PyGILState_NoteThreadState<ul>
+<li>PyThread_set_key_value</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>PyEval_AcquireThread<ul>
+<li>PyThread_acquire_lock<ul>
+<li>PyThreadState_Swap</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>PyEval_CallObjectWithKeywords<ul>
+<li>PyEval_EvalFrame</li>
+</ul>
+</li>
+<li>PyThreadState_Clear</li>
+<li>PyThreadState_DeleteCurrent<ul>
+<li>PyEval_ReleaseLock<ul>
+<li>PyThread_release_lock<ul>
+<li>LeaveNonRecursiveMutex</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>PyThread_exit_thread</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h2 id="线程调度"><a href="#线程调度" class="headerlink" title="线程调度"></a>线程调度</h2><h3 id="标准调度"><a href="#标准调度" class="headerlink" title="标准调度"></a>标准调度</h3><p>Python的线程调度机制是内建在Python解释器核心<code>PyEval_EvalFrameEx</code>中的。</p>
+<p>其中<code>_Py_Ticker</code>就是Python内部通过软件模拟实现时钟中断机制，而<code>_Py_CheckInterval</code>保存着Python设定的指令数，也就是通过<code>sys.getcheckinterval()</code>得到的值。<code>PyEvalFrameEx</code>每执行一条字节码指令，<code>_Py_Ticker</code>就减1，当执行了<code>_Py_CheckInterval</code>条指令后，<code>_Py_Ticker</code>减少到0，进入线程调度。</p>
+<p>当<code>_Py_Ticker</code>减少到0时，主线程先将维护当前线程状态对象的<code>_PyThreadState_Current</code>设置为NULL，然后释放掉GIL。这时，由于等待GIL而被挂起的子线程被操作系统的线程调度机制唤醒。从而最终进入<code>PyEval_EvalFrameEx</code>，对于主线程，虽然它已经失去GIL，但是由于他没有被挂起，所有对于操作系统的调度机制，它还可以被再次切换为活动线程。</p>
+<p>当操作系统的调度机制将主线程切换为活动线程后，主线程将再次执行<code>PyThread_acquire_lock</code>，主线程申请GIL，由于被子线程占有，主线程将自身挂起，从这时开始，操作系统的线程调度不会再将主线程切换为活动线程，除非等到子线程释放GIL之后。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">PyObject* PyEval_EvalFrameEx(PyFrameObject *f)</span><br><span class="line">&#123;</span><br><span class="line">	...</span><br><span class="line">    for(;;) &#123;</span><br><span class="line">    	if (--_Py_Ticker &lt; 0) &#123;</span><br><span class="line">    		_Py_Ticker = _Py_CheckInterval;</span><br><span class="line">    		if (interpreter_lock) &#123;</span><br><span class="line">    			// 撤销当前线程状态，释放GIL</span><br><span class="line">    			PyThreadState_Swap(NULL);</span><br><span class="line">    			PyThread_release_lock(interpreter_lock);</span><br><span class="line">    			// 其他线程已经开始执行，重新申请GIL，等待下一次调度</span><br><span class="line">    			PyThread_acquire_lock(interpreter_lock, 1);</span><br><span class="line">    			PyThreadState_Swap(tstate) != NULL;</span><br><span class="line">    		&#125;</span><br><span class="line">    	&#125;</span><br><span class="line">    &#125;</span><br><span class="line">    ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="阻塞调度"><a href="#阻塞调度" class="headerlink" title="阻塞调度"></a>阻塞调度</h3><p>另一种调度方式为阻塞调度，当线程A通过某种操作，比如说等待输入，将自身阻塞后，Python应该将等待GIL的线程唤醒。</p>
+<h2 id="Python子线程的销毁"><a href="#Python子线程的销毁" class="headerlink" title="Python子线程的销毁"></a>Python子线程的销毁</h2><p>在线程完成全部的计算后，Python将销毁线程。Python主线程和子线程的销毁是不同的，因为主线程的销毁必须要销毁Python的运行时环境，而子线程测不需要进行这些动作。</p>
+<p>Python首先会通过<code>PyThreadState_Clear</code>清理当前线程所对应的线程状态对象，其实就是对线程状态对象中维护的东西进行计数引用的维护。随后Python释放GIL，释放GIL的操作是在<code>PyThreadState_DeleteCurrent</code>中完成的。<code>PyThreadState_DeleteCurrent</code>首先会删除当前线程状态对象，然后通过<code>PyEval_ReleaseLock</code>释放GIL，最后的<code>PyThread_exit_thread</code>是一个和平台相关的操作，完成各个平台上不同的销毁原生线程的工作。</p>
+<h2 id="用户级别的互斥与同步"><a href="#用户级别的互斥与同步" class="headerlink" title="用户级别的互斥与同步"></a>用户级别的互斥与同步</h2><p>在Python3中，用户级别的线程使用<code>_thread</code>中的函数来实现，Python3推荐使用threading</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">_thread.allocate_lock() <span class="comment"># Return a new lock object</span></span><br><span class="line">_thread.TIMEOUT_MAX <span class="comment"># for Lock.acquire()</span></span><br><span class="line"></span><br><span class="line">lock.acquire(waitflag=<span class="number">1</span>, timeout=<span class="number">-1</span>)</span><br><span class="line"><span class="comment"># waitflag = 0, the lock is only acquired if it can acquired immediately without waiting.</span></span><br><span class="line"><span class="comment"># a negitive time out specifies an unbounded wait. Cannot specify a timeout if waitflag is 0</span></span><br><span class="line"><span class="comment"># return value is True if the lock is acquired, False is not.</span></span><br><span class="line"></span><br><span class="line">lock.release()</span><br><span class="line"></span><br><span class="line">lock.locked()</span><br><span class="line"><span class="comment"># return the status of the lock.</span></span><br></pre></td></tr></table></figure>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+      <div>
+        <ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者：</strong>
+    王晨懿
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="https://wang-chenyi.github.io/2019/03/12/2019-03-12-Python-GIL/" title="Python GIL">https://wang-chenyi.github.io/2019/03/12/2019-03-12-Python-GIL/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>
+    本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/3.0/" rel="external nofollow" target="_blank">CC BY-NC-SA 3.0</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+
+      </div>
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Python/" rel="tag"><i class="fa fa-tag"></i> Python</a>
+          
+            <a href="/tags/线程/" rel="tag"><i class="fa fa-tag"></i> 线程</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/03/01/2019-03-01-Python迭代总结（更新）/" rel="next" title="Python 迭代总结(更新)">
+                <i class="fa fa-chevron-left"></i> Python 迭代总结(更新)
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/03/18/2019-03-18-TCP相关/" rel="prev" title="TCP相关内容">
+                TCP相关内容 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/p1.png"
+                alt="wang" />
+            
+              <p class="site-author-name" itemprop="name">wang</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">20</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">9</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">41</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Python-GIL-Gloabal-Interpreter-Lock"><span class="nav-number">1.</span> <span class="nav-text">Python GIL(Gloabal Interpreter Lock)</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#创建线程"><span class="nav-number">1.1.</span> <span class="nav-text">创建线程</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#初始化环境"><span class="nav-number">1.1.1.</span> <span class="nav-text">初始化环境</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#创建线程-1"><span class="nav-number">1.1.2.</span> <span class="nav-text">创建线程</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#线程状态保护机制"><span class="nav-number">1.1.3.</span> <span class="nav-text">线程状态保护机制</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#线程调度"><span class="nav-number">1.2.</span> <span class="nav-text">线程调度</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#标准调度"><span class="nav-number">1.2.1.</span> <span class="nav-text">标准调度</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#阻塞调度"><span class="nav-number">1.2.2.</span> <span class="nav-text">阻塞调度</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Python子线程的销毁"><span class="nav-number">1.3.</span> <span class="nav-text">Python子线程的销毁</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#用户级别的互斥与同步"><span class="nav-number">1.4.</span> <span class="nav-text">用户级别的互斥与同步</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+        <div class="back-to-top">
+          <i class="fa fa-arrow-up"></i>
+          
+            <span id="scrollpercent"><span>0</span>%</span>
+          
+        </div>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">wang</span>
+
+  
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-area-chart"></i>
+    </span>
+    
+      <span class="post-meta-item-text">Site words total count&#58;</span>
+    
+    <span title="Site words total count">29.2k</span>
+  
+</div>
+
+
+<!--
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+-->
+
+
+
+<!--
+  <span class="post-meta-divider">|</span>
+-->
+
+
+
+<!--
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Gemini</a> v5.1.4</div>
+-->
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
