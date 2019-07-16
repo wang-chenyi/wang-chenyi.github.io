@@ -75,7 +75,7 @@
 
 
 
-  <meta name="keywords" content="Python,import,模块," />
+  <meta name="keywords" content="Python,线程," />
 
 
 
@@ -86,18 +86,18 @@
 
 
 
-<meta name="description" content="Python 模块在Python中，导入并不是把一个文本文件插入另一个文本文件中。导入其实是运行时的运算，程序第一次导入指定文件时，会执行三个步骤。 大致过程分为三步：  找到模块文件 编译成位码（需要时） 执行模的代码来创建其所定义的对象  这三个步骤只会在程序执行时，模块第一次导入时才会进行。在这之后，导入相同模块时，会跳过这三个步骤，而只是提取内存中已加载的模块对象。 模块导入过程从技术上讲">
-<meta name="keywords" content="Python,import,模块">
+<meta name="description" content="Python GIL(Gloabal Interpreter Lock)为了支持多线程机制，一个基本的需求就是需要实现不同线程对共享资源访问的互斥。这正是Python引用GIL的根源。GIL是一个解释器，在一个线程拥有了解释器的访问权后，其他的所有线程都必须等待它释放解释器的访问权。Python的多线程是在GIL的基础上实现的。意味着无论如何，在同一时间，只有一个线程可以访问Python所提供的A">
+<meta name="keywords" content="Python,线程">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Python 模块与导入 import机制解析">
-<meta property="og:url" content="https://wang-chenyi.github.io/2017/11/05/2017-11-05-Python-模块导入/index.html">
+<meta property="og:title" content="Python GIL">
+<meta property="og:url" content="https://wang-chenyi.github.io/2019/04/07/2019-04-07-Python-GIL/index.html">
 <meta property="og:site_name" content="摸鱼摸到大鲨鱼">
-<meta property="og:description" content="Python 模块在Python中，导入并不是把一个文本文件插入另一个文本文件中。导入其实是运行时的运算，程序第一次导入指定文件时，会执行三个步骤。 大致过程分为三步：  找到模块文件 编译成位码（需要时） 执行模的代码来创建其所定义的对象  这三个步骤只会在程序执行时，模块第一次导入时才会进行。在这之后，导入相同模块时，会跳过这三个步骤，而只是提取内存中已加载的模块对象。 模块导入过程从技术上讲">
+<meta property="og:description" content="Python GIL(Gloabal Interpreter Lock)为了支持多线程机制，一个基本的需求就是需要实现不同线程对共享资源访问的互斥。这正是Python引用GIL的根源。GIL是一个解释器，在一个线程拥有了解释器的访问权后，其他的所有线程都必须等待它释放解释器的访问权。Python的多线程是在GIL的基础上实现的。意味着无论如何，在同一时间，只有一个线程可以访问Python所提供的A">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2018-04-13T11:32:38.000Z">
+<meta property="og:updated_time" content="2019-07-16T09:35:15.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Python 模块与导入 import机制解析">
-<meta name="twitter:description" content="Python 模块在Python中，导入并不是把一个文本文件插入另一个文本文件中。导入其实是运行时的运算，程序第一次导入指定文件时，会执行三个步骤。 大致过程分为三步：  找到模块文件 编译成位码（需要时） 执行模的代码来创建其所定义的对象  这三个步骤只会在程序执行时，模块第一次导入时才会进行。在这之后，导入相同模块时，会跳过这三个步骤，而只是提取内存中已加载的模块对象。 模块导入过程从技术上讲">
+<meta name="twitter:title" content="Python GIL">
+<meta name="twitter:description" content="Python GIL(Gloabal Interpreter Lock)为了支持多线程机制，一个基本的需求就是需要实现不同线程对共享资源访问的互斥。这正是Python引用GIL的根源。GIL是一个解释器，在一个线程拥有了解释器的访问权后，其他的所有线程都必须等待它释放解释器的访问权。Python的多线程是在GIL的基础上实现的。意味着无论如何，在同一时间，只有一个线程可以访问Python所提供的A">
 
 
 
@@ -127,13 +127,13 @@
 
 
 
-  <link rel="canonical" href="https://wang-chenyi.github.io/2017/11/05/2017-11-05-Python-模块导入/"/>
+  <link rel="canonical" href="https://wang-chenyi.github.io/2019/04/07/2019-04-07-Python-GIL/"/>
 
 
 
 
 
-  <title>Python 模块与导入 import机制解析 | 摸鱼摸到大鲨鱼</title>
+  <title>Python GIL | 摸鱼摸到大鲨鱼</title>
   
 
 
@@ -294,7 +294,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://wang-chenyi.github.io/2017/11/05/2017-11-05-Python-模块导入/">
+    <link itemprop="mainEntityOfPage" href="https://wang-chenyi.github.io/2019/04/07/2019-04-07-Python-GIL/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="wang">
@@ -311,7 +311,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">Python 模块与导入 import机制解析</h1>
+          <h1 class="post-title" itemprop="name headline">Python GIL</h1>
         
 
         <div class="post-meta">
@@ -323,8 +323,8 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-11-05T00:00:00+08:00">
-                2017-11-05
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-04-07T00:00:00+08:00">
+                2019-04-07
               </time>
             
 
@@ -377,7 +377,7 @@
                   <span class="post-meta-item-text">字数统计&#58;</span>
                 
                 <span title="字数统计">
-                  2,007
+                  2,919
                 </span>
               
 
@@ -393,7 +393,7 @@
                   <span class="post-meta-item-text">阅读时长 &asymp;</span>
                 
                 <span title="阅读时长">
-                  7
+                  11
                 </span>
               
             </div>
@@ -414,70 +414,83 @@
       
 
       
-        <h1 id="Python-模块"><a href="#Python-模块" class="headerlink" title="Python 模块"></a>Python 模块</h1><p>在Python中，导入并不是把一个文本文件插入另一个文本文件中。导入其实是<strong>运行时的运算</strong>，程序第一次导入指定文件时，会执行三个步骤。</p>
-<p><strong>大致过程分</strong>为三步：</p>
-<ol>
-<li>找到模块文件</li>
-<li>编译成位码（需要时）</li>
-<li>执行模的代码来创建其所定义的对象</li>
-</ol>
-<p>这三个步骤只会在程序执行时，模块第一次导入时才会进行。在这之后，导入相同模块时，会跳过这三个步骤，而只是提取内存中已加载的模块对象。</p>
-<h2 id="模块导入过程"><a href="#模块导入过程" class="headerlink" title="模块导入过程"></a>模块导入过程</h2><p>从技术上讲，<strong>详细过程</strong>为：</p>
-<p>Python在初始化运行环境的时候会预先加载一批内建模块到内存中，这些模块的相关信息被存放在modules中。导入sys模块后在Python解释器中输入<code>sys.modules.items()</code>便可显示所有预加载模块的相关信息。当加载一个模块的时候，解释器实际上要完成以下工作</p>
-<ol>
-<li>找到模块路径，在后面详细解释</li>
-<li>在sys.modules中搜索看看该模块是否已经存在，如果存在，则将其导入到当前局部命名空间，加载结束。</li>
-<li>如果在sys模块中找不到对应模块的名称，则为需要导入的模块创建一个字典对象，并将该对象插入sys.modules中。</li>
-<li>加载前确认是否需要对模块对应的文件进行编译。如果有必要，Python接下来会将其编译为字节码。Python会检查文件的时间戳，如果发现字节码文件比源代码文件旧（例如修改过源文件），就会在程序运行时重新生成字节代码。</li>
-<li>执行动态加载，在当前模块的命名空间中执行编译后的字节码。文件中的所有语句会依次执行，从头到尾。</li>
-</ol>
-<p>PS. 当文件被导入时，就会进行编译。因此，通常不会看见程序顶层文件的.pyc字节码文件，除非这个文件也被其他文件导入：只有被导入的文件才会在机器上留下.pyc。顶层文件的字节码实在内部使用之后就丢弃了；被导入文件的字节码侧保存在文件中从而可以提高导入之后的速度。</p>
-<h3 id="模块搜索路径"><a href="#模块搜索路径" class="headerlink" title="模块搜索路径"></a>模块搜索路径</h3><p>导入过程最重要的部分是最早的部分，也就是定位要导入的文件。</p>
-<p>Python的模块搜索路径是一些主要组件组合而成的结果。</p>
-<ol>
-<li>程序的主目录</li>
-<li>Python的主目录（如果进行了设置）</li>
-<li>标准链接库目录</li>
-<li>任何.pth文件的内容（如果存在的话）</li>
-</ol>
-<p>最后，这四个组件组合起来就成了sys.path。</p>
-<h3 id="Q-amp-A"><a href="#Q-amp-A" class="headerlink" title="Q&amp;A"></a>Q&amp;A</h3><p>模块源代码是怎么变成模块对象的：</p>
-<p>模块的源代码文件在导入时，就会自动生成模块文件。从技术角度讲，模块的源代码会在导入时运行，一次一条语句，而在这个过程中赋值的所有变量名都会生成模块对象的属性。</p>
-<p>为什么需要设置PYTHONPATH环境变量：</p>
-<p>PATHONPATH是设置包含Python程序文件的目录列表。只需设置PYTHONPATH，从而可以正在用的目录以外的其他目录进行导入（正在使用的目录可以是交互模式下使用的当前目录，或者包含顶层文件的目录）</p>
-<p>什么是命名空间：</p>
-<p>命名空间是一种独立完备的变量包，而变量就是命名空间对象的属性。模块的命名空间包含了代码在模块文件顶层赋值的所有变量名（也就是没有嵌套于def或class语句中）。从技术角度讲，模块的全局作用域会变成模块对象的属性命名空间。</p>
-<h2 id="模块的使用"><a href="#模块的使用" class="headerlink" title="模块的使用"></a>模块的使用</h2><h3 id="导入只发生一次"><a href="#导入只发生一次" class="headerlink" title="导入只发生一次"></a>导入只发生一次</h3><p>在默认情况下，Python只对每个文件的每个进程做一次导入操作，之后的导入操作都只会取出已加载的模块对象。</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># simple.py</span></span><br><span class="line"><span class="keyword">print</span> <span class="string">'hello'</span></span><br><span class="line">spam = <span class="number">1</span></span><br></pre></td></tr></table></figure>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">&gt;&gt;&gt;<span class="keyword">import</span> simple</span><br><span class="line">hello</span><br><span class="line">&gt;&gt;&gt;simple.spam</span><br><span class="line"><span class="number">1</span></span><br><span class="line"></span><br><span class="line">&gt;&gt;&gt;simple.spam = <span class="number">2</span></span><br><span class="line">&gt;&gt;&gt;<span class="keyword">import</span> spam</span><br><span class="line">&gt;&gt;&gt;spam.spam</span><br><span class="line"><span class="number">2</span></span><br></pre></td></tr></table></figure>
-<p>如果需要一个模块的代码通过某种导入后再一次运行，使用内置load函数</p>
-<p>在Python3中，需要使用 <code>import imp</code>来使用load</p>
-<h3 id="import-和-from是赋值语句"><a href="#import-和-from是赋值语句" class="headerlink" title="import 和 from是赋值语句"></a>import 和 from是赋值语句</h3><p>import 使一个变量名引用整个模块对象</p>
-<p>from 会把变量名复制到另一个作用域，所以它就可以让我们直接在脚本中使用复制后的变量名，而不需要通过模块</p>
-<p>from * 会取得模块顶层所有赋了值的变量名的拷贝</p>
-<h3 id="import-和-from-的对等性"><a href="#import-和-from-的对等性" class="headerlink" title="import 和 from 的对等性"></a>import 和 from 的对等性</h3><p>from只是把变量名从一个模块复制到另一个模块，并不会对模块名本身进行赋值</p>
-<p><strong>从概念上说</strong>，一个from语句：</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> module <span class="keyword">import</span> name1, name2</span><br></pre></td></tr></table></figure>
-<p>与下面这些语句是等效的</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> moudle</span><br><span class="line">name1 = module.name1</span><br><span class="line">name2 = module.name2</span><br><span class="line"><span class="keyword">del</span> module</span><br></pre></td></tr></table></figure>
-<p>from 语句会在导入者中创建新变量，而那些变量初始化时引用了导入文件中的同名对象。不过，只有变量名被复制出来，而非模块本身。</p>
-<p>from 的第一步骤也是普通的导入操作。因此，from总是会把整个模块导入到内存中（如果还没被导入），无论是从这个文件中复制出多少变量名。只加载模块文件的一部分（例如一个函数）是不可能的，但是因为模块在Python之中是字节码而不是机器码，通常可以忽略效率问题。</p>
-<h3 id="有节制的使用from语句"><a href="#有节制的使用from语句" class="headerlink" title="有节制的使用from语句"></a>有节制的使用from语句</h3><h4 id="命名空间冲突"><a href="#命名空间冲突" class="headerlink" title="命名空间冲突"></a>命名空间冲突</h4><p>若三个文件 a.py, b.py, importtest.py</p>
-<p>其中 a.py, b.py中定义了 <code>add()</code>函数，在importtest中同时使用 from 引用 a.py 和 b.py 的 <code>add()</code>函数，并输出。</p>
-<p>最后输出显示<strong>最后起作用的是最近导入的<code>add()</code></strong></p>
-<p>在项目中，特别是大型项目中频繁使用from会增加命名空间冲突的概率从而导致无法预料的问题。</p>
-<h4 id="循环嵌套导入的问题"><a href="#循环嵌套导入的问题" class="headerlink" title="循环嵌套导入的问题"></a>循环嵌套导入的问题</h4><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#c1.py</span></span><br><span class="line"><span class="keyword">from</span> c2 <span class="keyword">import</span> g</span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">x</span><span class="params">()</span>:</span></span><br><span class="line">  	<span class="keyword">pass</span></span><br><span class="line"></span><br><span class="line"><span class="comment">#c2.py</span></span><br><span class="line"><span class="keyword">from</span> c1 <span class="keyword">import</span> x</span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">g</span><span class="params">()</span>:</span></span><br><span class="line">  	<span class="keyword">pass</span></span><br></pre></td></tr></table></figure>
-<p>无论运行哪个文件都会抛出ImportError异常。</p>
-<p>解决循环嵌套导入问题的一个方法是使用import语句。</p>
-<h2 id="模块命名空间"><a href="#模块命名空间" class="headerlink" title="模块命名空间"></a>模块命名空间</h2><h3 id="模块语句会在首次导入时执行"><a href="#模块语句会在首次导入时执行" class="headerlink" title="模块语句会在首次导入时执行"></a>模块语句会在首次导入时执行</h3><p>系统中，模块在第一次导入时无论在什么地方，Python都会建立空的模块对象，并逐一执行该模块文件内的语句，依照文件从头到尾的顺序</p>
-<h3 id="顶层的赋值语句会创建模块属性"><a href="#顶层的赋值语句会创建模块属性" class="headerlink" title="顶层的赋值语句会创建模块属性"></a>顶层的赋值语句会创建模块属性</h3><p>在导入时，文件顶层（不在def或class中）赋值变量的语句（例如 = 和 def），会创建模块对象的属性，赋值的变量名会储存在模块的命名空间中。</p>
-<p>ps:</p>
-<p><strong>模块的属性都是在模块语句执行时赋值的</strong></p>
-<p><strong>之后导入只会使用已加载的模块对象，而不会重载或重新执行文件的代码</strong></p>
-<h3 id="Q-amp-A-1"><a href="#Q-amp-A-1" class="headerlink" title="Q&amp;A"></a>Q&amp;A</h3><p>from与import有什么关系：</p>
-<p>from语句是导入整个模块，就像import语句那样，但是还有个步骤，就是会从被导入的模块中，复制一个或多个变量到from语句所在的作用域中。这样可以让程序员直接使用被导入的变量名。而不是通过模块来使用变量名。</p>
-<h2 id="name-和-main"><a href="#name-和-main" class="headerlink" title="__name__和__main__"></a>__name__和__main__</h2><p>如果文件是以顶层程序文件执行，在启动时，__name__就会设置为字符串”__main__“</p>
-<p>如果文件被导入，__name__就会改成客户端所了解的模块名</p>
+        <h1 id="Python-GIL-Gloabal-Interpreter-Lock"><a href="#Python-GIL-Gloabal-Interpreter-Lock" class="headerlink" title="Python GIL(Gloabal Interpreter Lock)"></a>Python GIL(Gloabal Interpreter Lock)</h1><p>为了支持多线程机制，一个基本的需求就是需要实现不同线程对共享资源访问的互斥。这正是Python引用GIL的根源。GIL是一个解释器，在一个线程拥有了解释器的访问权后，其他的所有线程都必须等待它释放解释器的访问权。Python的多线程是在GIL的基础上实现的。意味着无论如何，在同一时间，只有一个线程可以访问Python所提供的API，在单核处理器上，GIL的保护粒度很大，若是保护粒度过小，就会出现频繁的加锁、解锁操作，但是加锁解锁对于操作系统来说是比较重量级的操作，性能反而不如保护粒度大的GIL。另一方面，GIL的存在限制了多核处理器，导致多核处理器退化为单核处理器。所以Python并不能发挥多核处理器的作用。</p>
+<p>对于Python而言，字节码解释器是Python的核心所在，所以Python通过GIL来互斥不同线程对解释器的使用。当某个线程（A）获得GIL之后，其他线程必须等待A释放GIL后，才能进入解释器。</p>
+<p>对于线程调度机制，最关键的是要解决两个问题：</p>
+<p>1、在何时挂起当前线程，选择处于等待状态的下一个线程</p>
+<p>2、在众多处于等待状态的候选线程中，选择激活哪一个线程</p>
+<p>对于问题1，Python内部的时钟N规定了Python在执行了N条指令以后应该立即启动线程调度机制。在设置中，这个值为100.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;&gt;&gt; </span><span class="keyword">import</span> sys</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>sys.getcheckinterval()</span><br><span class="line"><span class="number">100</span></span><br></pre></td></tr></table></figure>
+<p>当一个线程获得了访问Python解释器所必须的GIL并进入解释器后，Python内部的监测机制就开始启动，当这个线程执行了100条指令后，Python解释器将强行挂起当前线程，开始切换到下一个处于等待状态的进程</p>
+<p>对于问题2，选择激活哪一个线程Python并没有做干涉，而是借用了底层操作系统所提供的线程调度机制来决定下一个进入Python解释器的线程。也就是意味着Python的线程就是操作系统所支持的原生线程，对于不同的操作系统，有着不同的实现。但是Python提供了一套统一的抽象机制，这就是Python中的 thread 以及threading。</p>
+<h2 id="创建线程"><a href="#创建线程" class="headerlink" title="创建线程"></a>创建线程</h2><h3 id="初始化环境"><a href="#初始化环境" class="headerlink" title="初始化环境"></a>初始化环境</h3><p>Python在启动时，并不支持多线程，只有在调用到 _thread.start_new_thread时（Python3中为 _thread），会明确指示Python虚拟机创建新线程，Python虚拟机就会自动建立多线程机制所需要的数据结构、环境和GIL。</p>
+<p>GIL的真面目为<code>void*</code>。创建工作由<code>PyThread_alloc_lock</code>完成，线程通过<code>PyThread_acquire_lock</code>尝试获取GIL。</p>
+<p><code>PyThread_acquire_lock</code>有两种工作方式，通过参数 waitflag 来区分。waitflag指示当GIL当前不可获得时，是否进行等待，更直接的说，就是当前线程是否通过WaitForSingleObject将自身挂起，直到别的线程释放GIL，然后由操作系统将自己唤醒</p>
+<p>如果 waitflag 为0，Python就会检查当前GIL是否可用。其中指示GIL是否可用的变量为owned，owned初始化为 -1，意味着GIL可用。当线程要使用GIL时，必须将其设置为0，当owned设置为0后，代表当前GIL已经被一个线程所占用。当有一个线程在等待GIL时，owned的值加1。当一个线程释放GIL时，一定会将owned的值减1。当所有线程都释放GIL后，owned会再次变为-1，意味着GIL再次变为可用。</p>
+<h3 id="创建线程-1"><a href="#创建线程-1" class="headerlink" title="创建线程"></a>创建线程</h3><p>主线程使用<code>PyThread_start_new_thread</code>来创建子线程。主线程通过调用操作系统来成功创建出原生线程，当成功创建并返回后，主线程开始将自己挂起，开始进入子线程（在这里子进程还没有开始申请GIL），执行bootstrap函数，在bootstrap中，子进程完成三个动作，获取线程ID，通知obj.done，调用t_bootstrap，其中，子线程通过obj.done唤醒主线程。为什么Python需要让主线程等待子线程的通知呢？是因为<code>PyThread_start_new_thread</code>需要返回子线程的id，子线程只有子线程被激活后才可以在子线程中获取。所以主线程等待的就是子线程的ID，当子线程中设置了obj.id，就会设法唤醒主线程。</p>
+<p>Python通过<code>PyThread_start_new_thread</code>来完成创建子线程的操作。在通过操作系统创建出子进程后，主线程会将自己挂起，进入子进程（这时子进程并没有获得GIL），等待子进程中控制的obj.done。子线程的过程是bootstrap，在bootstrap中，子进程完成了三个动作：获取线程ID、通知obj.done、调用t_bootstrap。那么Python为何要让主线程等待子线程的通知呢？这时因为<code>PyThread_start_new_thread</code>需要返回所创建子线程的ID，而这个ID只有在子线程被激活后才能在子线程中获取。因此主线程等待的就是这个ID，一旦子线程设置了obj.id，就会设法唤醒主线程。</p>
+<p>当主线程返回子线程ID后，就会继续执行后面的字节码，这时，主线程拥有GIL，子线程则进入t_bootstrap，并最终进入等待GIL的状态。开始了与主线程对GIL的竞争。在t_bootstrap中，第一个进行的动作就是<code>PyEval_AcquireThread</code>来申请GIL，当<code>PyEval_AcquireThread</code>结束后，子线程就获得了GIL，开始执行后面的内容。</p>
+<h3 id="线程状态保护机制"><a href="#线程状态保护机制" class="headerlink" title="线程状态保护机制"></a>线程状态保护机制</h3><p>这里的线程状态就等同于进程的上下文，在进行线程切换时，每一个线程都需要获得自己线程的相关信息。Python内部，维护着一个全局变量：<code>PyThreadState* _PyThread_State_Current</code>。当前活动的线程所对应的线程状态对象就保存在这个变量里。当Python进行线程调度时，会被激活的线程状态就会被保存在这个变量里。</p>
+<p><strong>Python在进行线程调度时，如何获得被激活线程的状态</strong></p>
+<p>Python内部会有一个单项链表来管理所有的Python线程状态对象。需要寻找一个线程对应的状态对象时，就遍历这个链表。对于状态对象链表的访问，不必在GIL的保护下进行。因为Python会创建一个独立的锁，专门对状态链表进行保护。这个锁的创建是在Python进行初始化的时候创建的。链表中Node的数据结构为：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">key</span> &#123;</span></span><br><span class="line">	<span class="class"><span class="keyword">struct</span> <span class="title">key</span> *<span class="title">next</span>;</span></span><br><span class="line">	<span class="keyword">long</span> id;</span><br><span class="line">	<span class="keyword">int</span> key;</span><br><span class="line">	<span class="keyword">void</span> *value;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p>id存放着线程的id，value指向<code>PyThreadState</code>。</p>
+<p>子线程在创建了自身的线程状态对象后，会通过<code>_PyGILState_NoteThreadState</code>（该函数在<code>PyThreadState_New</code>中）将这个对象放入状态对象链表中。但是当前线程不一定获得了GIL，子线程到现在还没有申请GIL，自然不会将自己挂起，所以操作系统可能在主进程和子进程之间进行切换。但是，<strong>Python级的线程调度和操作系统级别的线程调度是不同的</strong>，Python级别的线程调度意味着GIL所有权的易手，但操作系统并不是。当所有的线程都完成了初始化动作后，操作系统的线程调度才会和Python的线程调度一致。那时，Python的线程调度会迫使当前进程释放GIL，这一操作会触发GIL中维护的Event(Windows)内核对象，这个触发又进而触发操作系统的线程调度。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">void</span> <span class="title">t_bootstrap</span><span class="params">(<span class="keyword">void</span> *boot_raw)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    ...</span><br><span class="line">    PyThreadState *tstate;</span><br><span class="line">    PyObject *res;</span><br><span class="line">    ...</span><br><span class="line">    </span><br><span class="line">    tstate = PyThreadState_New(boot_interep);</span><br><span class="line">    PyEval_AcquireThread(tstate);</span><br><span class="line">    res = PyEval_CallObjectWithKeywords(...)</span><br><span class="line">    ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>完成<code>PyThreadState_New</code>后，就到了<code>PyEval_AcquireThread</code>，到了这一步，子线程开始争取GIL，到了这一步，子线程将自己挂起，操作系统的线程调度机制不能靠自己将其唤醒，只有等待Python的线程调度机制强迫主线程放弃GIL后，子线程才会被唤醒。</p>
+<p>当子线程被Python线程调度机制唤醒后，第一件事就是通过<code>PyThreadState_Swap</code>将Python维护的当前线程状态设置为自身的状态对象。然后进入<code>PyEval_CallObjectWithKeywords</code>，从这里一直往前，最终调用<code>PyEval_EvalFrameEx</code>，进入解释器。</p>
+<p><code>PyThread_start_new_thread</code>执行顺序：</p>
+<ul>
+<li>PyThread_start_new_therad<ul>
+<li>bootstrap<ul>
+<li>t_bootstrap<ul>
+<li>PyThreadState_New<ul>
+<li>_PyGILState_NoteThreadState<ul>
+<li>PyThread_set_key_value</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>PyEval_AcquireThread<ul>
+<li>PyThread_acquire_lock<ul>
+<li>PyThreadState_Swap</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>PyEval_CallObjectWithKeywords<ul>
+<li>PyEval_EvalFrame</li>
+</ul>
+</li>
+<li>PyThreadState_Clear</li>
+<li>PyThreadState_DeleteCurrent<ul>
+<li>PyEval_ReleaseLock<ul>
+<li>PyThread_release_lock<ul>
+<li>LeaveNonRecursiveMutex</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>PyThread_exit_thread</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h2 id="线程调度"><a href="#线程调度" class="headerlink" title="线程调度"></a>线程调度</h2><h3 id="标准调度"><a href="#标准调度" class="headerlink" title="标准调度"></a>标准调度</h3><p>Python的线程调度机制是内建在Python解释器核心<code>PyEval_EvalFrameEx</code>中的。</p>
+<p>其中<code>_Py_Ticker</code>就是Python内部通过软件模拟实现时钟中断机制，而<code>_Py_CheckInterval</code>保存着Python设定的指令数，也就是通过<code>sys.getcheckinterval()</code>得到的值。<code>PyEvalFrameEx</code>每执行一条字节码指令，<code>_Py_Ticker</code>就减1，当执行了<code>_Py_CheckInterval</code>条指令后，<code>_Py_Ticker</code>减少到0，进入线程调度。</p>
+<p>当<code>_Py_Ticker</code>减少到0时，主线程先将维护当前线程状态对象的<code>_PyThreadState_Current</code>设置为NULL，然后释放掉GIL。这时，由于等待GIL而被挂起的子线程被操作系统的线程调度机制唤醒。从而最终进入<code>PyEval_EvalFrameEx</code>，对于主线程，虽然它已经失去GIL，但是由于他没有被挂起，所有对于操作系统的调度机制，它还可以被再次切换为活动线程。</p>
+<p>当操作系统的调度机制将主线程切换为活动线程后，主线程将再次执行<code>PyThread_acquire_lock</code>，主线程申请GIL，由于被子线程占有，主线程将自身挂起，从这时开始，操作系统的线程调度不会再将主线程切换为活动线程，除非等到子线程释放GIL之后。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">PyObject* PyEval_EvalFrameEx(PyFrameObject *f)</span><br><span class="line">&#123;</span><br><span class="line">	...</span><br><span class="line">    for(;;) &#123;</span><br><span class="line">    	if (--_Py_Ticker &lt; 0) &#123;</span><br><span class="line">    		_Py_Ticker = _Py_CheckInterval;</span><br><span class="line">    		if (interpreter_lock) &#123;</span><br><span class="line">    			// 撤销当前线程状态，释放GIL</span><br><span class="line">    			PyThreadState_Swap(NULL);</span><br><span class="line">    			PyThread_release_lock(interpreter_lock);</span><br><span class="line">    			// 其他线程已经开始执行，重新申请GIL，等待下一次调度</span><br><span class="line">    			PyThread_acquire_lock(interpreter_lock, 1);</span><br><span class="line">    			PyThreadState_Swap(tstate) != NULL;</span><br><span class="line">    		&#125;</span><br><span class="line">    	&#125;</span><br><span class="line">    &#125;</span><br><span class="line">    ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="阻塞调度"><a href="#阻塞调度" class="headerlink" title="阻塞调度"></a>阻塞调度</h3><p>另一种调度方式为阻塞调度，当线程A通过某种操作，比如说等待输入，将自身阻塞后，Python应该将等待GIL的线程唤醒。</p>
+<h2 id="Python子线程的销毁"><a href="#Python子线程的销毁" class="headerlink" title="Python子线程的销毁"></a>Python子线程的销毁</h2><p>在线程完成全部的计算后，Python将销毁线程。Python主线程和子线程的销毁是不同的，因为主线程的销毁必须要销毁Python的运行时环境，而子线程测不需要进行这些动作。</p>
+<p>Python首先会通过<code>PyThreadState_Clear</code>清理当前线程所对应的线程状态对象，其实就是对线程状态对象中维护的东西进行计数引用的维护。随后Python释放GIL，释放GIL的操作是在<code>PyThreadState_DeleteCurrent</code>中完成的。<code>PyThreadState_DeleteCurrent</code>首先会删除当前线程状态对象，然后通过<code>PyEval_ReleaseLock</code>释放GIL，最后的<code>PyThread_exit_thread</code>是一个和平台相关的操作，完成各个平台上不同的销毁原生线程的工作。</p>
+<h2 id="用户级别的互斥与同步"><a href="#用户级别的互斥与同步" class="headerlink" title="用户级别的互斥与同步"></a>用户级别的互斥与同步</h2><p>在Python3中，用户级别的线程使用<code>_thread</code>中的函数来实现，Python3推荐使用threading</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">_thread.allocate_lock() <span class="comment"># Return a new lock object</span></span><br><span class="line">_thread.TIMEOUT_MAX <span class="comment"># for Lock.acquire()</span></span><br><span class="line"></span><br><span class="line">lock.acquire(waitflag=<span class="number">1</span>, timeout=<span class="number">-1</span>)</span><br><span class="line"><span class="comment"># waitflag = 0, the lock is only acquired if it can acquired immediately without waiting.</span></span><br><span class="line"><span class="comment"># a negitive time out specifies an unbounded wait. Cannot specify a timeout if waitflag is 0</span></span><br><span class="line"><span class="comment"># return value is True if the lock is acquired, False is not.</span></span><br><span class="line"></span><br><span class="line">lock.release()</span><br><span class="line"></span><br><span class="line">lock.locked()</span><br><span class="line"><span class="comment"># return the status of the lock.</span></span><br></pre></td></tr></table></figure>
 
       
     </div>
@@ -498,7 +511,7 @@
   </li>
   <li class="post-copyright-link">
     <strong>本文链接：</strong>
-    <a href="https://wang-chenyi.github.io/2017/11/05/2017-11-05-Python-模块导入/" title="Python 模块与导入 import机制解析">https://wang-chenyi.github.io/2017/11/05/2017-11-05-Python-模块导入/</a>
+    <a href="https://wang-chenyi.github.io/2019/04/07/2019-04-07-Python-GIL/" title="Python GIL">https://wang-chenyi.github.io/2019/04/07/2019-04-07-Python-GIL/</a>
   </li>
   <li class="post-copyright-license">
     <strong>版权声明： </strong>
@@ -515,9 +528,7 @@
           
             <a href="/tags/Python/" rel="tag"><i class="fa fa-tag"></i> Python</a>
           
-            <a href="/tags/import/" rel="tag"><i class="fa fa-tag"></i> import</a>
-          
-            <a href="/tags/模块/" rel="tag"><i class="fa fa-tag"></i> 模块</a>
+            <a href="/tags/线程/" rel="tag"><i class="fa fa-tag"></i> 线程</a>
           
         </div>
       
@@ -530,8 +541,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2017/10/11/2017-11-04-Python-闭包与装饰器/" rel="next" title="Python 闭包与装饰器">
-                <i class="fa fa-chevron-left"></i> Python 闭包与装饰器
+              <a href="/2019/04/04/2019-04-04-Python迭代总结（更新）/" rel="next" title="Python 迭代总结(更新)">
+                <i class="fa fa-chevron-left"></i> Python 迭代总结(更新)
               </a>
             
           </div>
@@ -539,10 +550,6 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2017/12/08/2017-12-9-MacOS-Python2与Python3-安装-OpenCV3/" rel="prev" title="MacOS Python2与Python3 安装 OpenCV3">
-                MacOS Python2与Python3 安装 OpenCV3 <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -678,7 +685,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Python-模块"><span class="nav-number">1.</span> <span class="nav-text">Python 模块</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#模块导入过程"><span class="nav-number">1.1.</span> <span class="nav-text">模块导入过程</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#模块搜索路径"><span class="nav-number">1.1.1.</span> <span class="nav-text">模块搜索路径</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Q-amp-A"><span class="nav-number">1.1.2.</span> <span class="nav-text">Q&amp;A</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#模块的使用"><span class="nav-number">1.2.</span> <span class="nav-text">模块的使用</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#导入只发生一次"><span class="nav-number">1.2.1.</span> <span class="nav-text">导入只发生一次</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#import-和-from是赋值语句"><span class="nav-number">1.2.2.</span> <span class="nav-text">import 和 from是赋值语句</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#import-和-from-的对等性"><span class="nav-number">1.2.3.</span> <span class="nav-text">import 和 from 的对等性</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#有节制的使用from语句"><span class="nav-number">1.2.4.</span> <span class="nav-text">有节制的使用from语句</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#命名空间冲突"><span class="nav-number">1.2.4.1.</span> <span class="nav-text">命名空间冲突</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#循环嵌套导入的问题"><span class="nav-number">1.2.4.2.</span> <span class="nav-text">循环嵌套导入的问题</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#模块命名空间"><span class="nav-number">1.3.</span> <span class="nav-text">模块命名空间</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#模块语句会在首次导入时执行"><span class="nav-number">1.3.1.</span> <span class="nav-text">模块语句会在首次导入时执行</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#顶层的赋值语句会创建模块属性"><span class="nav-number">1.3.2.</span> <span class="nav-text">顶层的赋值语句会创建模块属性</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Q-amp-A-1"><span class="nav-number">1.3.3.</span> <span class="nav-text">Q&amp;A</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#name-和-main"><span class="nav-number">1.4.</span> <span class="nav-text">__name__和__main__</span></a></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Python-GIL-Gloabal-Interpreter-Lock"><span class="nav-number">1.</span> <span class="nav-text">Python GIL(Gloabal Interpreter Lock)</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#创建线程"><span class="nav-number">1.1.</span> <span class="nav-text">创建线程</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#初始化环境"><span class="nav-number">1.1.1.</span> <span class="nav-text">初始化环境</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#创建线程-1"><span class="nav-number">1.1.2.</span> <span class="nav-text">创建线程</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#线程状态保护机制"><span class="nav-number">1.1.3.</span> <span class="nav-text">线程状态保护机制</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#线程调度"><span class="nav-number">1.2.</span> <span class="nav-text">线程调度</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#标准调度"><span class="nav-number">1.2.1.</span> <span class="nav-text">标准调度</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#阻塞调度"><span class="nav-number">1.2.2.</span> <span class="nav-text">阻塞调度</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Python子线程的销毁"><span class="nav-number">1.3.</span> <span class="nav-text">Python子线程的销毁</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#用户级别的互斥与同步"><span class="nav-number">1.4.</span> <span class="nav-text">用户级别的互斥与同步</span></a></li></ol></li></ol></div>
             
 
           </div>

@@ -290,7 +290,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://wang-chenyi.github.io/2017/10/11/2017-11-05-《改善Python程序的91个建议》-笔记/">
+    <link itemprop="mainEntityOfPage" href="https://wang-chenyi.github.io/2017/11/05/2017-11-05-Python-模块导入/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="wang">
@@ -309,7 +309,7 @@
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2017/10/11/2017-11-05-《改善Python程序的91个建议》-笔记/" itemprop="url">《改善Python程序的91个建议》笔记</a></h1>
+                <a class="post-title-link" href="/2017/11/05/2017-11-05-Python-模块导入/" itemprop="url">Python 模块与导入 import机制解析</a></h1>
         
 
         <div class="post-meta">
@@ -321,8 +321,8 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-10-11T00:00:00+08:00">
-                2017-10-11
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-11-05T00:00:00+08:00">
+                2017-11-05
               </time>
             
 
@@ -344,8 +344,8 @@
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Python进阶/" itemprop="url" rel="index">
-                    <span itemprop="name">Python进阶</span>
+                  <a href="/categories/Python/" itemprop="url" rel="index">
+                    <span itemprop="name">Python</span>
                   </a>
                 </span>
 
@@ -375,7 +375,7 @@
                   <span class="post-meta-item-text">字数统计&#58;</span>
                 
                 <span title="字数统计">
-                  803
+                  2,007
                 </span>
               
 
@@ -391,7 +391,7 @@
                   <span class="post-meta-item-text">阅读时长 &asymp;</span>
                 
                 <span title="阅读时长">
-                  3
+                  7
                 </span>
               
             </div>
@@ -414,16 +414,18 @@
       
         
           
-          《改善Python程序的91个建议》笔记第二章：编程惯用法开始
-没有包括的内容8、10、12、13、14、18
-数据交换值不推荐使用中间变量x, y = y, x
-内存执行顺序
-1）计算右边表达式 y,x，在内存中创建元组 (y,x)
-2）计算表达式左边的值并且赋值。元组被一次分配给左边的标识符xy
+          Python 模块在Python中，导入并不是把一个文本文件插入另一个文本文件中。导入其实是运行时的运算，程序第一次导入指定文件时，会执行三个步骤。
+大致过程分为三步：
+
+找到模块文件
+编译成位码（需要时）
+执行模的代码来创建其所定义的对象
+
+这三个步骤只会在程序执行时，模块第一次导入时才会进行。在
           ...
           <!--noindex-->
           <div class="post-button text-center">
-            <a class="btn" href="/2017/10/11/2017-11-05-《改善Python程序的91个建议》-笔记/#more" rel="contents">
+            <a class="btn" href="/2017/11/05/2017-11-05-Python-模块导入/#more" rel="contents">
               阅读全文 &raquo;
             </a>
           </div>
@@ -605,6 +607,190 @@ Python变量名解析（LEGB原则）当在函数中使用未认证的变量名�
           <!--noindex-->
           <div class="post-button text-center">
             <a class="btn" href="/2017/10/11/2017-11-04-Python-闭包与装饰器/#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://wang-chenyi.github.io/2017/10/11/2017-11-05-《改善Python程序的91个建议》-笔记/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="wang">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/p1.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="摸鱼摸到大鲨鱼">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2017/10/11/2017-11-05-《改善Python程序的91个建议》-笔记/" itemprop="url">《改善Python程序的91个建议》笔记</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-10-11T00:00:00+08:00">
+                2017-10-11
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Python进阶/" itemprop="url" rel="index">
+                    <span itemprop="name">Python进阶</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">字数统计&#58;</span>
+                
+                <span title="字数统计">
+                  803
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
+                
+                <span title="阅读时长">
+                  3
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+          《改善Python程序的91个建议》笔记第二章：编程惯用法开始
+没有包括的内容8、10、12、13、14、18
+数据交换值不推荐使用中间变量x, y = y, x
+内存执行顺序
+1）计算右边表达式 y,x，在内存中创建元组 (y,x)
+2）计算表达式左边的值并且赋值。元组被一次分配给左边的标识符xy
+          ...
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2017/10/11/2017-11-05-《改善Python程序的91个建议》-笔记/#more" rel="contents">
               阅读全文 &raquo;
             </a>
           </div>
@@ -1653,7 +1839,7 @@ Firebug
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">17</span>
+                  <span class="site-state-item-count">18</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -1675,7 +1861,7 @@ Firebug
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">37</span>
+                  <span class="site-state-item-count">38</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>
@@ -1733,7 +1919,7 @@ Firebug
     
       <span class="post-meta-item-text">Site words total count&#58;</span>
     
-    <span title="Site words total count">24.0k</span>
+    <span title="Site words total count">26.9k</span>
   
 </div>
 
