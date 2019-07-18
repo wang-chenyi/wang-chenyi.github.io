@@ -1,0 +1,1263 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+  
+  
+    
+    
+  <script src="/lib/pace/pace.min.js?v=1.0.2"></script>
+  <link href="/lib/pace/pace-theme-bounce.min.css?v=1.0.2" rel="stylesheet">
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Python,内存管理," />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="Python内存管理（一）内存分配Python的内存管理机制可分为四层  操作系统的内存管理接口  Python在底层的管理接口上所做的包装(为了平台可移植性，保证相同的语义由相同的运行时行为，为了处理于平台相关的内存分配行为时，要在C的内存分配接口上再提供一层包装)  Python Object memory allocator Object-specific memory [int][dict">
+<meta name="keywords" content="Python,内存管理">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Python内存管理(一) 内存分配">
+<meta property="og:url" content="https://wang-chenyi.github.io/2019/03/22/2019-03-22-Python内存管理（一）/index.html">
+<meta property="og:site_name" content="摸鱼摸到大鲨鱼">
+<meta property="og:description" content="Python内存管理（一）内存分配Python的内存管理机制可分为四层  操作系统的内存管理接口  Python在底层的管理接口上所做的包装(为了平台可移植性，保证相同的语义由相同的运行时行为，为了处理于平台相关的内存分配行为时，要在C的内存分配接口上再提供一层包装)  Python Object memory allocator Object-specific memory [int][dict">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="https://res.cloudinary.com/wang-chen-yi/image/upload/v1563278384/%E5%86%85%E5%AD%98%E6%B1%A0%E5%85%A8%E6%99%AF.png">
+<meta property="og:updated_time" content="2019-07-18T06:16:42.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Python内存管理(一) 内存分配">
+<meta name="twitter:description" content="Python内存管理（一）内存分配Python的内存管理机制可分为四层  操作系统的内存管理接口  Python在底层的管理接口上所做的包装(为了平台可移植性，保证相同的语义由相同的运行时行为，为了处理于平台相关的内存分配行为时，要在C的内存分配接口上再提供一层包装)  Python Object memory allocator Object-specific memory [int][dict">
+<meta name="twitter:image" content="https://res.cloudinary.com/wang-chen-yi/image/upload/v1563278384/%E5%86%85%E5%AD%98%E6%B1%A0%E5%85%A8%E6%99%AF.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":true,"scrollpercent":true,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="https://wang-chenyi.github.io/2019/03/22/2019-03-22-Python内存管理（一）/"/>
+
+
+
+
+
+  <title>Python内存管理(一) 内存分配 | 摸鱼摸到大鲨鱼</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">摸鱼摸到大鲨鱼</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">Oh, Suger. You don't have to be so sweet.</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-history"></i> <br />
+            
+            时间轴
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off"
+             placeholder="搜索..." spellcheck="false"
+             type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://wang-chenyi.github.io/2019/03/22/2019-03-22-Python内存管理（一）/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="wang">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/p1.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="摸鱼摸到大鲨鱼">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Python内存管理(一) 内存分配</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-03-22T00:00:00+08:00">
+                2019-03-22
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Python/" itemprop="url" rel="index">
+                    <span itemprop="name">Python</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">字数统计&#58;</span>
+                
+                <span title="字数统计">
+                  3,928
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
+                
+                <span title="阅读时长">
+                  17
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="Python内存管理（一）内存分配"><a href="#Python内存管理（一）内存分配" class="headerlink" title="Python内存管理（一）内存分配"></a>Python内存管理（一）内存分配</h1><p>Python的内存管理机制可分为四层</p>
+<ol start="0">
+<li><p>操作系统的内存管理接口</p>
+</li>
+<li><p>Python在底层的管理接口上所做的包装(为了平台可移植性，保证相同的语义由相同的运行时行为，为了处理于平台相关的内存分配行为时，要在C的内存分配接口上再提供一层包装)</p>
+</li>
+<li>Python Object memory allocator</li>
+<li>Object-specific memory [int][dict][list]…[str]</li>
+</ol>
+<p>第一层为<code>PyMem_</code>开头的函数簇</p>
+<p>第二层为<code>PyObje_</code>开头的函数簇</p>
+<h2 id="小块空间内存池"><a href="#小块空间内存池" class="headerlink" title="小块空间内存池"></a>小块空间内存池</h2><p>在Python中，整个小块内存的内存池可视为层次结构，从下至上分别为 block、pool、arena、内存池。</p>
+<h3 id="block"><a href="#block" class="headerlink" title="block"></a>block</h3><p>block为大小确定的内存块，根据</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta"># <span class="meta-keyword">define</span> ALIGNMENT 8 <span class="comment">/* must be 2^N */</span></span></span><br></pre></td></tr></table></figure>
+<p>来确定一个的block长度为8个字节对齐。同时，Python为block的大小设定了一个上限。当申请内存小于上限时，采用不同种类的block（单个block组合而成）来满足需求。若申请内存大于上限，则交给第一层的<code>PyMem_</code>函数簇处理，说白了也就是直接使用C中的malloc函数进行分配。</p>
+<p>其中需求的内存和分配的内存如下表（Python 2.7.15）：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">* Request in bytes     Size of allocated block      Size class idx</span><br><span class="line">* ----------------------------------------------------------------</span><br><span class="line">*        1-8                     8                       0</span><br><span class="line">*        9-16                   16                       1</span><br><span class="line">*       17-24                   24                       2</span><br><span class="line">*       25-32                   32                       3</span><br><span class="line">*       33-40                   40                       4</span><br><span class="line">*       41-48                   48                       5</span><br><span class="line">*       49-56                   56                       6</span><br><span class="line">*       57-64                   64                       7</span><br><span class="line">*       65-72                   72                       8</span><br><span class="line">*        ...                   ...                     ...</span><br><span class="line">*      497-504                 504                      62</span><br><span class="line">*      505-512                 512                      63</span><br><span class="line">*</span><br><span class="line">*      0, SMALL_REQUEST_THRESHOLD + 1 and up: routed to the underlying</span><br><span class="line">*      allocator.</span><br><span class="line">*/</span><br></pre></td></tr></table></figure>
+<p>eg:如果需要28字节的内存，Python则会分配32个字节的内存，对应的size class index 为 3.其中 size index 为pool_header的一部分。</p>
+<h3 id="Pool"><a href="#Pool" class="headerlink" title="Pool"></a>Pool</h3><p>一组block的集合称为pool，pool管理着一堆具有固定大小的内存块。pool的大小一般为一个系统内存页（4 KB），源码中的定义为：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">define</span> SYSTEM_PAGE_SIZE        (4 * 1024)</span></span><br></pre></td></tr></table></figure>
+<p>Linux查看系统内存页大小的方式为:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ getconf PAGE_SIZE</span><br><span class="line"><span class="comment"># 4096 - 4 KB</span></span><br></pre></td></tr></table></figure>
+<p>Python中，pool包含两部分，一部分为pool_header，另一部分为该pool管理的一组block，其中pool_header的定义如下：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/* Pool for small blocks. */</span></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">pool_header</span> &#123;</span></span><br><span class="line">    <span class="keyword">union</span> &#123; block *_padding;</span><br><span class="line">            uint count; &#125; ref;          <span class="comment">/* number of allocated blocks    */</span></span><br><span class="line">    block *freeblock;                   <span class="comment">/* pool's free list head         */</span></span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">pool_header</span> *<span class="title">nextpool</span>;</span>       <span class="comment">/* next pool of this size class  */</span></span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">pool_header</span> *<span class="title">prevpool</span>;</span>       <span class="comment">/* previous pool       ""        */</span></span><br><span class="line">    uint arenaindex;                    <span class="comment">/* index into arenas of base adr */</span></span><br><span class="line">    uint szidx;                         <span class="comment">/* block size class index        */</span></span><br><span class="line">    uint nextoffset;                    <span class="comment">/* bytes to virgin block         */</span></span><br><span class="line">    uint maxnextoffset;                 <span class="comment">/* largest valid nextoffset      */</span></span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p>4KB大小的内存除去pool_header以外便是pool维护的block的内存。并且每一个pool所管理的block容量是统一的，由szidx进行指定：其中一个pool所管理的block大小全部为16字节，另外一个pool所管理block大小全部为64字节…</p>
+<h4 id="pool中申请内存"><a href="#pool中申请内存" class="headerlink" title="pool中申请内存"></a>pool中申请内存</h4><p>pool_header中定义的 freeblock 指向的是下一个可用的 block 的起始地址，每申请分配一个block，返回当前的 freeblock，就是该分配的 block 起始地址，然后 freeblock 和 nextoffset 都会向后移动一个 block 的距离，申请，前进，申请，前进。而 maxnextoffset 指定了最后一个block的边界。当nextoffset &gt; maxnextoffset时，说明一个pool中的block已经被遍历完了。</p>
+<p>在释放一个block之前，freeblock指向的是第一个未分配的block，</p>
+<p>假如我们申请了五个block内存块，freeblock指向的就是第六个block，虽然freeblock指向一个有效的block内存块，但是 <em>freeblock其实是为空的（也就是第六个block为空）。如果过了一段时间，程序释放了第二个和第四个，这时，freeblock会将第二块和第四块内存加入freeblock链表中，该链表称为离散自由block链表，当程序又要继续分配内存时，就会先分配已经释放的第二块block，再分配第四块内存，直到 </em>freeblock == NULL，表明到了链表尾部。开始原本的分配方式。</p>
+<h3 id="arena"><a href="#arena" class="headerlink" title="arena"></a>arena</h3><p>arena中arena_object的定义(类似于pool_header)</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">arena_object</span> &#123;</span></span><br><span class="line">    <span class="comment">/* The address of the arena, as returned by malloc. */</span></span><br><span class="line">    uptr address;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/* Pool-aligned pointer to the next pool to be carved off. */</span></span><br><span class="line">    block* pool_address;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/* The number of available pools in the arena:  free pools + never-</span></span><br><span class="line"><span class="comment">     * allocated pools.</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    uint nfreepools;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/* The total number of pools in the arena, whether or not available. */</span></span><br><span class="line">    uint ntotalpools;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/* Singly-linked list of available pools. */</span></span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">pool_header</span>* <span class="title">freepools</span>;</span></span><br><span class="line"></span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">arena_object</span>* <span class="title">nextarena</span>;</span></span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">arena_object</span>* <span class="title">prevarena</span>;</span></span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p>在Python中，确实会存在多个arena_object构成的集合，但是这个集合构成的是数组，数组首地址由arenas维护。在arena_object中存在nextarena和prevarena，这两个变量有其他的作用，</p>
+<p>虽然arena是用来管理多个pool的，但是他和pool管理block的方式不太一样，因为一个pool代表4kb内存，当一个pool被申请后，它包含的block也一定被申请了。但是arena_object和它管理的内存是分离的，当arena_object被申请时，它所管理的pool集合的内存并没有被申请，而是在后面某一时刻，arena_object于pool建立连接。建立连接的过程被Python一刀切下分为两种状态。</p>
+<ol>
+<li>未使用状态（unused）：arena_object没有与pool建立连接</li>
+<li>可用状态（usable）：arena_object与pool建立了连接，转换为usable状态</li>
+</ol>
+<p>未使用的arena的链表表头是unused_arena_objects，arena和arena通过nextarena连接，是一个单向链表。</p>
+<p>可用的arena链表表头是usabel_arenas，arena和arena之间通过nextarena和prevarena连接，是一个双向链表。</p>
+<h4 id="arena操作"><a href="#arena操作" class="headerlink" title="arena操作"></a>arena操作</h4><p>初始化arenas数组，初始化长度为16，后每次申请翻倍。初始化后的所有arena都在<code>unused_arena_objects</code>单链表里面。</p>
+<p>初始化arena后，变可以从中取出一个pool，如果是全新的arena，则会取出第一个pool，如果不是全新的arena，则会判断arena-&gt;freepools中是否有之前释放掉的pool，因为一个pool释放时，会加入到所在arena-&gt;freepools链表的最前方。</p>
+<p>每分配一个pool，就检查是不是用到了最后一个，如果是，需要变更<code>usable_arenas</code>到下一个可用的节点，如果没有可用的，那么下次进行内存分配的时候, 会判定从arenas数组中取一个</p>
+<h4 id="回收arena"><a href="#回收arena" class="headerlink" title="回收arena"></a>回收arena</h4><ol>
+<li>arena中所有pool都是闲置的(empty), 将arena内存释放, 返回给操作系统</li>
+<li>如果arena中之前所有的pool都是占用的(used), 现在释放了一个pool(empty), 需要将 arena加入到usable_arenas, 会加入链表表头</li>
+<li>如果arena中empty的pool个数n, 则从useable_arenas开始寻找可以插入的位置. 将arena插入. (useable_arenas是一个有序链表, 按empty pool的个数, 保证empty pool数量越多, 被使用的几率越小, 最终被整体释放的机会越大)</li>
+<li>其他情况, 不对arena 进行处理</li>
+</ol>
+<p>到此为止，Python小内存池的三层结构block，pool，arena的大致结构就是这样。</p>
+<p><code>obmalloc.c</code>中重要的定义如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">#define SYSTEM_PAGE_SIZE        (4 * 1024)</span><br><span class="line">#define SMALL_REQUEST_THRESHOLD 512</span><br><span class="line">#define SMALL_MEMORY_LIMIT      (64 * 1024 * 1024)	/* python发行版本取消此限制 */</span><br><span class="line">#define ARENA_SIZE              (256 &lt;&lt; 10)     	/* 256KiB */</span><br><span class="line">#define MAX_ARENAS              (SMALL_MEMORY_LIMIT / ARENA_SIZE) /* 发行版无限制 */</span><br><span class="line">#define POOL_SIZE               SYSTEM_PAGE_SIZE</span><br></pre></td></tr></table></figure>
+<p>其中Python分配内存是否使用内存池的分界点由确定SMALL_REQUEST_THRESHOLD（512字节）确定</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">For small requests, the allocator sub-allocates &lt;Big&gt; blocks of memory.Requests greater than SMALL_REQUEST_THRESHOLD bytes are routed to the system's allocator.</span><br></pre></td></tr></table></figure>
+<h3 id="内存池"><a href="#内存池" class="headerlink" title="内存池"></a>内存池</h3><p>虽然arena是Python内存池的最上层结构，用来管理pool，但是申请内存的基本操作单元依然是pool，比如在我们申请28字节的内存时，Python会在内存池内寻找一块能够满足需求的pool，从中取出一个block返回，而不会去寻找arena。因为pool是一个由size概念的内存管理抽象体。而arena是没有size概念的内存管理抽象体。这就意味着同一个arena，在不同的时刻，管理的pool可能都是32字节的，也有可能一半是32字节的，一半是64字节的。这就决定了在进行分配内存和销毁时，所有动作都是在pool上完成的。</p>
+<p>内存池中的pool，在Python运行时，总是处于三种状态中的一种</p>
+<ol>
+<li>used：至少有一个被使用，至少有一个未被使用。这种状态的pool受控于Python内部维护的usedpools数组</li>
+<li>full：pool中所有的block都已经被使用，这种状态的pool在arena中，但是不再arena的freepools中。</li>
+<li>empty：pool中所有的block都未被数用，处于这种状态的pool通过pool_header中的nextpool指针构成一个链表，这个链表的表头就是arena_object中的freepools。</li>
+</ol>
+<h4 id="usedpools"><a href="#usedpools" class="headerlink" title="usedpools"></a>usedpools</h4><p>首先明确，usedpools为一个数组。其定义为：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">define</span> PTA(x)  ((poolp )((uchar *)&amp;(usedpools[2*(x)]) - 2*sizeof(block *)))</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> PT(x)   PTA(x), PTA(x)</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">static</span> poolp usedpools[<span class="number">2</span> * ((NB_SMALL_SIZE_CLASSES + <span class="number">7</span>) / <span class="number">8</span>) * <span class="number">8</span>] = &#123;</span><br><span class="line">    PT(<span class="number">0</span>), PT(<span class="number">1</span>), PT(<span class="number">2</span>), PT(<span class="number">3</span>), PT(<span class="number">4</span>), PT(<span class="number">5</span>), PT(<span class="number">6</span>), PT(<span class="number">7</span>)</span><br><span class="line">#<span class="keyword">if</span> NB_SMALL_SIZE_CLASSES &gt; <span class="number">8</span></span><br><span class="line">    , PT(<span class="number">8</span>), PT(<span class="number">9</span>), PT(<span class="number">10</span>), PT(<span class="number">11</span>), PT(<span class="number">12</span>), PT(<span class="number">13</span>), PT(<span class="number">14</span>), PT(<span class="number">15</span>)</span><br><span class="line">#<span class="keyword">if</span> NB_SMALL_SIZE_CLASSES &gt; <span class="number">16</span></span><br><span class="line">    , PT(<span class="number">16</span>), PT(<span class="number">17</span>), PT(<span class="number">18</span>), PT(<span class="number">19</span>), PT(<span class="number">20</span>), PT(<span class="number">21</span>), PT(<span class="number">22</span>), PT(<span class="number">23</span>)</span><br><span class="line">#<span class="keyword">if</span> NB_SMALL_SIZE_CLASSES &gt; <span class="number">24</span></span><br><span class="line">    , PT(<span class="number">24</span>), PT(<span class="number">25</span>), PT(<span class="number">26</span>), PT(<span class="number">27</span>), PT(<span class="number">28</span>), PT(<span class="number">29</span>), PT(<span class="number">30</span>), PT(<span class="number">31</span>)</span><br><span class="line">#<span class="keyword">if</span> NB_SMALL_SIZE_CLASSES &gt; <span class="number">32</span></span><br><span class="line">    , PT(<span class="number">32</span>), PT(<span class="number">33</span>), PT(<span class="number">34</span>), PT(<span class="number">35</span>), PT(<span class="number">36</span>), PT(<span class="number">37</span>), PT(<span class="number">38</span>), PT(<span class="number">39</span>)</span><br><span class="line">#<span class="keyword">if</span> NB_SMALL_SIZE_CLASSES &gt; <span class="number">40</span></span><br><span class="line">    , PT(<span class="number">40</span>), PT(<span class="number">41</span>), PT(<span class="number">42</span>), PT(<span class="number">43</span>), PT(<span class="number">44</span>), PT(<span class="number">45</span>), PT(<span class="number">46</span>), PT(<span class="number">47</span>)</span><br><span class="line">#<span class="keyword">if</span> NB_SMALL_SIZE_CLASSES &gt; <span class="number">48</span></span><br><span class="line">    , PT(<span class="number">48</span>), PT(<span class="number">49</span>), PT(<span class="number">50</span>), PT(<span class="number">51</span>), PT(<span class="number">52</span>), PT(<span class="number">53</span>), PT(<span class="number">54</span>), PT(<span class="number">55</span>)</span><br><span class="line">#<span class="keyword">if</span> NB_SMALL_SIZE_CLASSES &gt; <span class="number">56</span></span><br><span class="line">    , PT(<span class="number">56</span>), PT(<span class="number">57</span>), PT(<span class="number">58</span>), PT(<span class="number">59</span>), PT(<span class="number">60</span>), PT(<span class="number">61</span>), PT(<span class="number">62</span>), PT(<span class="number">63</span>)</span><br><span class="line">#<span class="keyword">if</span> NB_SMALL_SIZE_CLASSES &gt; <span class="number">64</span></span><br><span class="line">#error <span class="string">"NB_SMALL_SIZE_CLASSES should be less than 64"</span></span><br><span class="line">#endif <span class="comment">/* NB_SMALL_SIZE_CLASSES &gt; 64 */</span></span><br><span class="line">#endif <span class="comment">/* NB_SMALL_SIZE_CLASSES &gt; 56 */</span></span><br><span class="line">#endif <span class="comment">/* NB_SMALL_SIZE_CLASSES &gt; 48 */</span></span><br><span class="line">#endif <span class="comment">/* NB_SMALL_SIZE_CLASSES &gt; 40 */</span></span><br><span class="line">#endif <span class="comment">/* NB_SMALL_SIZE_CLASSES &gt; 32 */</span></span><br><span class="line">#endif <span class="comment">/* NB_SMALL_SIZE_CLASSES &gt; 24 */</span></span><br><span class="line">#endif <span class="comment">/* NB_SMALL_SIZE_CLASSES &gt; 16 */</span></span><br><span class="line">#endif <span class="comment">/* NB_SMALL_SIZE_CLASSES &gt;  8 */</span></span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p>猛然看去，usedpools是长度为64的数组。其实，usedpools是长度为128的数组。</p>
+<p><strong>其中的<code>usedpools[0]， usedpool[1]</code>表示的pool管理着尺寸为8个字节的block，对应的size class index为 0。所以<code>usedpools[2]</code>代表管理16字节的pool，以此类推，直到<code>usedpools[63]</code>。规律就是 index * 2 <--> 管理size class index为i的pool</--></strong></p>
+<p>那为什么又说usedpools长度是128呢，那是因为<code>usedpools[i]</code>中存放的是<code>PT(i)</code>，也就是 <code>PTA(i), PTA(i)</code>。每个PTA又是一个pool指针，观察PTA的定义可知，这个PTA(i)指向的是该<code>usedpools[i]</code>向前8个字节，如图：</p>
+<p>但是为什么要这么做呢？</p>
+<p>首先来看看pool的定义：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/* Pool for small blocks. */</span></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">pool_header</span> &#123;</span></span><br><span class="line">    <span class="keyword">union</span> &#123; block *_padding;</span><br><span class="line">            uint count; &#125; ref;          <span class="comment">/* number of allocated blocks    */</span></span><br><span class="line">    block *freeblock;                   <span class="comment">/* pool's free list head         */</span></span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">pool_header</span> *<span class="title">nextpool</span>;</span>       <span class="comment">/* next pool of this size class  */</span></span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">pool_header</span> *<span class="title">prevpool</span>;</span>       <span class="comment">/* previous pool       ""        */</span></span><br><span class="line">    ...</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p>其中的<code>ref</code>、<code>freeblock</code>刚好组成8个字节。所以<strong>该pool的首地址+8即是该pool的nextpool，+12即是该pool的prevpool。</strong>(usedpools trick 重点)。</p>
+<p>举个例子说明：</p>
+<p>比如申请28个字节的单位，可得到需要block为32字节的。所以对应的size class index为3，也就是<code>x = 3</code>。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">PTA(<span class="number">3</span>) = ((poolp )((uchar *)&amp;(usedpools[<span class="number">2</span>*(<span class="number">3</span>)]) - <span class="number">2</span>*<span class="number">8</span>)</span><br></pre></td></tr></table></figure>
+<p>所以，该pool在usedpools中的位置为<code>usedpools[3 + 3]</code>也就是<code>usedpool[6]</code>，但是<code>usedpools[6]</code>指向的却是<code>usedpools[4]</code>，但是<code>usedpools[6]-&gt;next</code>呢？就是该pool的首地址（<code>usedpools[4]</code>）往后偏移8个字节，就是<code>usedpools[6]</code>。</p>
+<p>说来说去，也就是该pool的nextpool和prevpool都指向了自己！这样做有什么用？</p>
+<p>如果我们要将管理32字节的pool放入usedpools中，只需要进行<code>usedpools[i + i]-&gt;nextpool = pool</code>即可。下次需要访问size class为3（32字节）的pool时，简单的访问<code>usedpool[3+3]</code>即可。Python正是使用这个usedpools快速的从众多的pool中快速寻找到一个最合适的pool来操作。</p>
+<p>这样的好处非常明显，如果使用链表，则增加了遍历时间，使用数组可以一步到位，快速定位。其次很好的使用了nextpool的地址为该pool的首地址+8字节这个特性，不需要修改数据结构。</p>
+<h3 id="Python内存分配步骤-重点"><a href="#Python内存分配步骤-重点" class="headerlink" title="Python内存分配步骤(重点)"></a>Python内存分配步骤(重点)</h3><p>前面都是基础，现在到了正片，开始真正的内存分配。</p>
+<p>当Python启动后，usedpools中并没有任何内容，Python采用延迟分配，当开始申请小块内存时，Python才会建立内存池。（根据中文来解读整个分配步骤）</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br></pre></td><td class="code"><pre><span class="line">PyObject_Malloc(<span class="keyword">size_t</span> nbytes)</span><br><span class="line">&#123;</span><br><span class="line">    block *bp;</span><br><span class="line">    poolp pool;</span><br><span class="line">    poolp next;</span><br><span class="line">    uint size;</span><br><span class="line"></span><br><span class="line">	<span class="comment">/* [1]判断是否是小块内存 */</span></span><br><span class="line">    <span class="keyword">if</span> ((nbytes - <span class="number">1</span>) &lt; SMALL_REQUEST_THRESHOLD) &#123;</span><br><span class="line">        LOCK();</span><br><span class="line">        <span class="comment">/* [2]获得size index，在usedpools中获取pool */</span> </span><br><span class="line">        size = (uint)(nbytes - <span class="number">1</span>) &gt;&gt; ALIGNMENT_SHIFT;</span><br><span class="line">        pool = usedpools[size + size];</span><br><span class="line">        <span class="comment">/* [3]如果有可用的pool */</span></span><br><span class="line">        <span class="keyword">if</span> (pool != pool-&gt;nextpool) &#123;</span><br><span class="line">            ++pool-&gt;ref.count;</span><br><span class="line">            bp = pool-&gt;freeblock;</span><br><span class="line">            assert(bp != <span class="literal">NULL</span>);</span><br><span class="line">            <span class="comment">/* [4]先看pool 中 freeblock是否有可用的，有就直接返回 */</span></span><br><span class="line">            <span class="keyword">if</span> ((pool-&gt;freeblock = *(block **)bp) != <span class="literal">NULL</span>) &#123;</span><br><span class="line">                UNLOCK();</span><br><span class="line">                <span class="keyword">return</span> (<span class="keyword">void</span> *)bp;</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            <span class="comment">/* [5] 如果没有可用的freeblock，那么比较nextoffset 和 maxoffset，然后申请返回该block */</span></span><br><span class="line">            <span class="keyword">if</span> (pool-&gt;nextoffset &lt;= pool-&gt;maxnextoffset) &#123;</span><br><span class="line">                <span class="comment">/* There is room for another block. */</span></span><br><span class="line">                pool-&gt;freeblock = (block*)pool +</span><br><span class="line">                                  pool-&gt;nextoffset;</span><br><span class="line">                pool-&gt;nextoffset += INDEX2SIZE(size);</span><br><span class="line">                *(block **)(pool-&gt;freeblock) = <span class="literal">NULL</span>;</span><br><span class="line">                UNLOCK();</span><br><span class="line">                <span class="keyword">return</span> (<span class="keyword">void</span> *)bp;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="comment">/* Pool is full, unlink from used pools. */</span></span><br><span class="line">            <span class="comment">/* [6] 如果pool满了，则把满的 pool 从 usedpool中释放掉 */</span></span><br><span class="line">            next = pool-&gt;nextpool;</span><br><span class="line">            pool = pool-&gt;prevpool;</span><br><span class="line">            next-&gt;prevpool = pool;</span><br><span class="line">            pool-&gt;nextpool = next;</span><br><span class="line">            UNLOCK();</span><br><span class="line">            <span class="keyword">return</span> (<span class="keyword">void</span> *)bp;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">/* [7] 如果usable_arenas为空 */</span></span><br><span class="line">        <span class="keyword">if</span> (usable_arenas == <span class="literal">NULL</span>) &#123;</span><br><span class="line">            <span class="comment">/* [8] 则申请新的arena_object，并且放入usable_arena中 */</span></span><br><span class="line">            ...</span><br><span class="line">        <span class="comment">/* Try to get a cached free pool. */</span></span><br><span class="line">        <span class="comment">/* [9] 尝试从usable_arenas-&gt;freepools中获取pool */</span></span><br><span class="line">        pool = usable_arenas-&gt;freepools;</span><br><span class="line">        <span class="keyword">if</span> (pool != <span class="literal">NULL</span>) &#123;</span><br><span class="line">            <span class="comment">/* Unlink from cached pools. */</span></span><br><span class="line">            usable_arenas-&gt;freepools = pool-&gt;nextpool;</span><br><span class="line"></span><br><span class="line">            <span class="comment">/* [10] 调整该arena中可用的pool的数量 */</span></span><br><span class="line">            --usable_arenas-&gt;nfreepools;</span><br><span class="line">            <span class="comment">/* [11] 如果没有可用的了，就把他从usable_arenas中剔除*/</span></span><br><span class="line">            <span class="keyword">if</span> (usable_arenas-&gt;nfreepools == <span class="number">0</span>) &#123;</span><br><span class="line">                ...</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">else</span> &#123;</span><br><span class="line">                <span class="comment">/* [12] 获取pool成功，则对该pool进行初始化 */</span></span><br><span class="line">            &#125;</span><br><span class="line">        <span class="comment">/* [13] 初始化pool */</span></span><br><span class="line">        init_pool:</span><br><span class="line">            <span class="comment">/* Frontlink to used pools. */</span></span><br><span class="line">            <span class="comment">/* [14] 放置该pool到usedpools数组中 */</span></span><br><span class="line">            next = usedpools[size + size]; <span class="comment">/* == prev */</span></span><br><span class="line">            ...</span><br><span class="line">            <span class="comment">/* [15] 因为pool-&gt;szidx初始化为0xFFFF，所以如果pool在之前的操作中刚好拥有</span></span><br><span class="line"><span class="comment">             * 正确的szidx，那么直接分配并返回！</span></span><br><span class="line"><span class="comment">             */</span></span><br><span class="line">            <span class="keyword">if</span> (pool-&gt;szidx == size) &#123;</span><br><span class="line">                <span class="comment">/* Luckily, this pool last contained blocks</span></span><br><span class="line"><span class="comment">                 * of the same size class, so its header</span></span><br><span class="line"><span class="comment">                 * and free list are already initialized.</span></span><br><span class="line"><span class="comment">                 */</span></span><br><span class="line">                bp = pool-&gt;freeblock;</span><br><span class="line">                pool-&gt;freeblock = *(block **)bp;</span><br><span class="line">                UNLOCK();</span><br><span class="line">                <span class="keyword">return</span> (<span class="keyword">void</span> *)bp;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="comment">/* [16] 否则初始化该pool，然后取出一个返回，可阅读下面英文注释 */</span></span><br><span class="line">            <span class="comment">/*</span></span><br><span class="line"><span class="comment">             * Initialize the pool header, set up the free list to</span></span><br><span class="line"><span class="comment">             * contain just the second block, and return the first</span></span><br><span class="line"><span class="comment">             * block.</span></span><br><span class="line"><span class="comment">             */</span></span><br><span class="line">            pool-&gt;szidx = size;</span><br><span class="line">            size = INDEX2SIZE(size);</span><br><span class="line">            bp = (block *)pool + POOL_OVERHEAD;</span><br><span class="line">            pool-&gt;nextoffset = POOL_OVERHEAD + (size &lt;&lt; <span class="number">1</span>);</span><br><span class="line">            pool-&gt;maxnextoffset = POOL_SIZE - size;</span><br><span class="line">            pool-&gt;freeblock = bp + size;</span><br><span class="line">            *(block **)(pool-&gt;freeblock) = <span class="literal">NULL</span>;</span><br><span class="line">            UNLOCK();</span><br><span class="line">            <span class="keyword">return</span> (<span class="keyword">void</span> *)bp;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">/* Carve off a new pool. */</span></span><br><span class="line">        <span class="comment">/* [17] 获取pool失败，对arena中的pool集合进行初始化 */</span></span><br><span class="line">        ...</span><br><span class="line">        <span class="keyword">if</span> (usable_arenas-&gt;nfreepools == <span class="number">0</span>) &#123;</span><br><span class="line">            assert(usable_arenas-&gt;nextarena == <span class="literal">NULL</span> ||</span><br><span class="line">                   usable_arenas-&gt;nextarena-&gt;prevarena ==</span><br><span class="line">                   usable_arenas);</span><br><span class="line">            <span class="comment">/* Unlink the arena:  it is completely allocated. */</span></span><br><span class="line">            usable_arenas = usable_arenas-&gt;nextarena;</span><br><span class="line">            <span class="keyword">if</span> (usable_arenas != <span class="literal">NULL</span>) &#123;</span><br><span class="line">                usable_arenas-&gt;prevarena = <span class="literal">NULL</span>;</span><br><span class="line">                assert(usable_arenas-&gt;address != <span class="number">0</span>);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">/* [18] 然后跳转到init_pool */</span></span><br><span class="line">        <span class="keyword">goto</span> init_pool;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/* The small block allocator ends here. */</span></span><br><span class="line"></span><br><span class="line"><span class="comment">/* [19] 如果申请内存不在范围内，则直接使用malloc进行分配，特别的是不能分配0字节，强行转化为1 */</span></span><br><span class="line">redirect:</span><br><span class="line">    <span class="comment">/* Redirect the original request to the underlying (libc) allocator.</span></span><br><span class="line"><span class="comment">     * We jump here on bigger requests, on error in the code above (as a</span></span><br><span class="line"><span class="comment">     * last chance to serve the request) or when the max memory limit</span></span><br><span class="line"><span class="comment">     * has been reached.</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">if</span> (nbytes == <span class="number">0</span>)</span><br><span class="line">        nbytes = <span class="number">1</span>;</span><br><span class="line">    <span class="keyword">return</span> (<span class="keyword">void</span> *)<span class="built_in">malloc</span>(nbytes);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="释放block"><a href="#释放block" class="headerlink" title="释放block"></a>释放block</h3><p>释放block会引起pool的变化，由三种情况</p>
+<ol>
+<li>释放block，pool从used状态转为used状态</li>
+<li>释放block，pool中used状态转换为empty状态</li>
+<li>释放block，pool中full状态转换为used状态</li>
+</ol>
+<p>对于情况1：</p>
+<p>将该block放入自由block链表中，并调整计数引用</p>
+<p>对于情况3：</p>
+<p>将该pool放入usedpools中即可</p>
+<p>对于情况2：</p>
+<p>将pool放入arena维护的freepools链表中，且如果arena中所有的pool都是empty，则释放pool集合所占有的内存，并且调整usable_arenas和unused_arena_objects链表。</p>
+<h2 id="内存池全景"><a href="#内存池全景" class="headerlink" title="内存池全景"></a>内存池全景</h2><p><img src="https://res.cloudinary.com/wang-chen-yi/image/upload/v1563278384/%E5%86%85%E5%AD%98%E6%B1%A0%E5%85%A8%E6%99%AF.png" alt="全景"></p>
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><ol>
+<li><p>obmalloc.c源码</p>
+</li>
+<li><p>《Python源码剖析》</p>
+</li>
+<li><a href="http://www.wklken.me/posts/2015/08/29/python-source-memory-2.html#quan-ju-jie-gou" target="_blank" rel="noopener">http://www.wklken.me/posts/2015/08/29/python-source-memory-2.html#quan-ju-jie-gou</a></li>
+<li><a href="https://blog.csdn.net/fjslovejhl/article/details/45954923" target="_blank" rel="noopener">https://blog.csdn.net/fjslovejhl/article/details/45954923</a></li>
+</ol>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+      <div>
+        <ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者：</strong>
+    王晨懿
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="https://wang-chenyi.github.io/2019/03/22/2019-03-22-Python内存管理（一）/" title="Python内存管理(一) 内存分配">https://wang-chenyi.github.io/2019/03/22/2019-03-22-Python内存管理（一）/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>
+    本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/3.0/" rel="external nofollow" target="_blank">CC BY-NC-SA 3.0</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+
+      </div>
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Python/" rel="tag"><i class="fa fa-tag"></i> Python</a>
+          
+            <a href="/tags/内存管理/" rel="tag"><i class="fa fa-tag"></i> 内存管理</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/03/18/2019-03-18-TCP相关/" rel="next" title="TCP相关内容">
+                <i class="fa fa-chevron-left"></i> TCP相关内容
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/03/24/2019-03-24-Python内存管理（二）/" rel="prev" title="Python内存管理(二) 内存分配">
+                Python内存管理(二) 内存分配 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/p1.png"
+                alt="wang" />
+            
+              <p class="site-author-name" itemprop="name">wang</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">22</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">9</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">42</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Python内存管理（一）内存分配"><span class="nav-number">1.</span> <span class="nav-text">Python内存管理（一）内存分配</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#小块空间内存池"><span class="nav-number">1.1.</span> <span class="nav-text">小块空间内存池</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#block"><span class="nav-number">1.1.1.</span> <span class="nav-text">block</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Pool"><span class="nav-number">1.1.2.</span> <span class="nav-text">Pool</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#pool中申请内存"><span class="nav-number">1.1.2.1.</span> <span class="nav-text">pool中申请内存</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#arena"><span class="nav-number">1.1.3.</span> <span class="nav-text">arena</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#arena操作"><span class="nav-number">1.1.3.1.</span> <span class="nav-text">arena操作</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#回收arena"><span class="nav-number">1.1.3.2.</span> <span class="nav-text">回收arena</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#内存池"><span class="nav-number">1.1.4.</span> <span class="nav-text">内存池</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#usedpools"><span class="nav-number">1.1.4.1.</span> <span class="nav-text">usedpools</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Python内存分配步骤-重点"><span class="nav-number">1.1.5.</span> <span class="nav-text">Python内存分配步骤(重点)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#释放block"><span class="nav-number">1.1.6.</span> <span class="nav-text">释放block</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#内存池全景"><span class="nav-number">1.2.</span> <span class="nav-text">内存池全景</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参考"><span class="nav-number">1.3.</span> <span class="nav-text">参考</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+        <div class="back-to-top">
+          <i class="fa fa-arrow-up"></i>
+          
+            <span id="scrollpercent"><span>0</span>%</span>
+          
+        </div>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">wang</span>
+
+  
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-area-chart"></i>
+    </span>
+    
+      <span class="post-meta-item-text">Site words total count&#58;</span>
+    
+    <span title="Site words total count">34.5k</span>
+  
+</div>
+
+
+<!--
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+-->
+
+
+
+<!--
+  <span class="post-meta-divider">|</span>
+-->
+
+
+
+<!--
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Gemini</a> v5.1.4</div>
+-->
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
